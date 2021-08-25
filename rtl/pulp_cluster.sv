@@ -100,6 +100,7 @@ module pulp_cluster
   parameter EVNT_WIDTH              = 8,  // size of the event bus
   parameter REMAP_ADDRESS           = 1,  // for cluster virtualization
 
+  parameter LOG_DEPTH               = 3,
   localparam ASYNC_EVENT_DATA_WIDTH = (2**LOG_DEPTH)*EVNT_WIDTH,
   // FPU PARAMETERS
   parameter APU_NARGS_CPU           = 3,
@@ -114,9 +115,8 @@ module pulp_cluster
   parameter AXI_USER_WIDTH          = 1,
   parameter AXI_ID_IN_WIDTH         = 4,
   parameter AXI_ID_OUT_WIDTH        = 6, 
-  parameter AXI_STRB_C2S_WIDTH      = AXI_DATA_C2S_WIDTH/8,
-  parameter AXI_STRB_S2C_WIDTH      = AXI_DATA_S2C_WIDTH/8,
-  parameter LOG_DEPTH               = 3,
+  parameter AXI_STRB_C2S_OUT        = AXI_DATA_C2S_WIDTH/8,
+  parameter AXI_STRB_S2C_IN         = AXI_DATA_S2C_WIDTH/8,
   // CLUSTER TO SOC CDC AXI PARAMETER
   localparam S2C_AW_WIDTH           = AXI_ID_IN_WIDTH+AXI_ADDR_WIDTH+AXI_USER_WIDTH+$bits(axi_pkg::len_t)+$bits(axi_pkg::size_t)+$bits(axi_pkg::burst_t)+$bits(axi_pkg::cache_t)+$bits(axi_pkg::prot_t)+$bits(axi_pkg::qos_t)+$bits(axi_pkg::region_t)+$bits(axi_pkg::atop_t)+1,
   localparam S2C_W_WIDTH            = AXI_USER_WIDTH+AXI_STRB_WIDTH_IN+AXI_DATA_IN_WIDTH+1,
