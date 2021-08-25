@@ -110,13 +110,13 @@ module pulp_cluster
   parameter APU_NUSFLAGS_CPU        = 5,
   // AXI parameters
   parameter AXI_ADDR_WIDTH          = 64,
-  parameter AXI_DATA_C2S_WIDTH      = 64,
-  parameter AXI_DATA_S2C_WIDTH      = 64,
+  parameter AXI_DATA_OUT_WIDTH      = 64,
+  parameter AXI_DATA_IN_WIDTH      = 64,
   parameter AXI_USER_WIDTH          = 1,
   parameter AXI_ID_IN_WIDTH         = 4,
   parameter AXI_ID_OUT_WIDTH        = 6, 
-  parameter AXI_STRB_C2S_OUT        = AXI_DATA_C2S_WIDTH/8,
-  parameter AXI_STRB_S2C_IN         = AXI_DATA_S2C_WIDTH/8,
+  parameter AXI_STRB_OUT_WIDTH      = AXI_DATA_OUT_WIDTH/8,
+  parameter AXI_STRB_IN_WIDTH       = AXI_DATA_IN_WIDTH/8,
   // CLUSTER TO SOC CDC AXI PARAMETER
   localparam S2C_AW_WIDTH           = AXI_ID_IN_WIDTH+AXI_ADDR_WIDTH+AXI_USER_WIDTH+$bits(axi_pkg::len_t)+$bits(axi_pkg::size_t)+$bits(axi_pkg::burst_t)+$bits(axi_pkg::cache_t)+$bits(axi_pkg::prot_t)+$bits(axi_pkg::qos_t)+$bits(axi_pkg::region_t)+$bits(axi_pkg::atop_t)+1,
   localparam S2C_W_WIDTH            = AXI_USER_WIDTH+AXI_STRB_WIDTH_IN+AXI_DATA_IN_WIDTH+1,
