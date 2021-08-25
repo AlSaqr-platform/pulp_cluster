@@ -128,7 +128,7 @@ module pulp_cluster
   localparam C2S_W_WIDTH            = AXI_USER_WIDTH+AXI_STRB_WIDTH_OUT+AXI_DATA_OUT_WIDTH+1,
   localparam C2S_R_WIDTH            = AXI_ID_OUT_WIDTH+AXI_DATA_OUT_WIDTH+AXI_USER_WIDTH+$bits(axi_pkg::resp_t)+1,
   localparam C2S_B_WIDTH            = AXI_USER_WIDTH+AXI_ID_OUT_WIDTH+$bits(axi_pkg::resp_t),
-  localparam C2S_AR_WIDTH           = AXI_ID_OUT_WIDTH+AXI_ADDR_WIDTH+AXI_USER_WIDTH+$bits(axi_pkg::len_t)+$bits(axi_pkg::size_t)+$bits(axi_pkg::burst_t)+$bits(axi_pkg::cache_t)+$bits(axi_pkg::prot_t)+$bits(axi_pkg::qos_t)+$bits(axi_pkg::region_t)+1
+  localparam C2S_AR_WIDTH           = AXI_ID_OUT_WIDTH+AXI_ADDR_WIDTH+AXI_USER_WIDTH+$bits(axi_pkg::len_t)+$bits(axi_pkg::size_t)+$bits(axi_pkg::burst_t)+$bits(axi_pkg::cache_t)+$bits(axi_pkg::prot_t)+$bits(axi_pkg::qos_t)+$bits(axi_pkg::region_t)+1,
 
   localparam ASYNC_C2S_AW_DATA_WIDTH = (2**LOG_DEPTH)*C2S_AW_WIDTH,
   localparam ASYNC_C2S_W_DATA_WIDTH  = (2**LOG_DEPTH)*C2S_W_WIDTH,
