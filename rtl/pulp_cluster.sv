@@ -80,42 +80,6 @@ module pulp_cluster
   parameter CLUST_SHARED_FP         = 2,
   parameter CLUST_SHARED_FP_DIVSQRT = 2,
   
-  // AXI parameters
-  parameter AXI_ADDR_WIDTH          = 32,
-  parameter AXI_DATA_C2S_WIDTH      = 64,
-  parameter AXI_DATA_S2C_WIDTH      = 32,
-  parameter AXI_USER_WIDTH          = 6,
-  parameter AXI_ID_IN_WIDTH         = 5,
-  parameter AXI_ID_OUT_WIDTH        = 7, 
-  parameter AXI_STRB_C2S_WIDTH      = AXI_DATA_C2S_WIDTH/8,
-  parameter AXI_STRB_S2C_WIDTH      = AXI_DATA_S2C_WIDTH/8,
-  parameter DC_SLICE_BUFFER_WIDTH   = 8,
-  parameter LOG_DEPTH               = 3,
-  // CLUSTER TO SOC CDC AXI PARAMETER
-  parameter C2S_AW_WIDTH             = 80, 
-  parameter C2S_W_WIDTH              = 79,
-  parameter C2S_B_WIDTH              = 15,
-  parameter C2S_AR_WIDTH             = 74,
-  parameter C2S_R_WIDTH              = 80,
-  // CLUSTER TO SOC CDC AXI PARAMETERS
-  parameter S2C_AW_WIDTH             = 78, 
-  parameter S2C_W_WIDTH              = 43,
-  parameter S2C_B_WIDTH              = 13,
-  parameter S2C_AR_WIDTH             = 72,
-  parameter S2C_R_WIDTH              = 46,
-
-  localparam ASYNC_C2S_AW_DATA_WIDTH = (2**LOG_DEPTH)*C2S_AW_WIDTH,
-  localparam ASYNC_C2S_W_DATA_WIDTH  = (2**LOG_DEPTH)*C2S_W_WIDTH,
-  localparam ASYNC_C2S_B_DATA_WIDTH  = (2**LOG_DEPTH)*C2S_B_WIDTH,
-  localparam ASYNC_C2S_AR_DATA_WIDTH = (2**LOG_DEPTH)*C2S_AR_WIDTH,
-  localparam ASYNC_C2S_R_DATA_WIDTH  = (2**LOG_DEPTH)*C2S_R_WIDTH,
-  
-  localparam ASYNC_S2C_AW_DATA_WIDTH = (2**LOG_DEPTH)*S2C_AW_WIDTH,
-  localparam ASYNC_S2C_W_DATA_WIDTH  = (2**LOG_DEPTH)*S2C_W_WIDTH,
-  localparam ASYNC_S2C_B_DATA_WIDTH  = (2**LOG_DEPTH)*S2C_B_WIDTH,
-  localparam ASYNC_S2C_AR_DATA_WIDTH = (2**LOG_DEPTH)*S2C_AR_WIDTH,
-  localparam ASYNC_S2C_R_DATA_WIDTH  = (2**LOG_DEPTH)*S2C_R_WIDTH,
- 
   // TCDM and log interconnect parameters
   parameter DATA_WIDTH              = 32,
   parameter ADDR_WIDTH              = 32,
@@ -142,7 +106,41 @@ module pulp_cluster
   parameter APU_WOP_CPU             = 6,
   parameter WAPUTYPE                = 3,
   parameter APU_NDSFLAGS_CPU        = 15,
-  parameter APU_NUSFLAGS_CPU        = 5
+  parameter APU_NUSFLAGS_CPU        = 5,
+  // AXI parameters
+  parameter AXI_ADDR_WIDTH          = 64,
+  parameter AXI_DATA_C2S_WIDTH      = 64,
+  parameter AXI_DATA_S2C_WIDTH      = 64,
+  parameter AXI_USER_WIDTH          = 1,
+  parameter AXI_ID_IN_WIDTH         = 4,
+  parameter AXI_ID_OUT_WIDTH        = 6, 
+  parameter AXI_STRB_C2S_WIDTH      = AXI_DATA_C2S_WIDTH/8,
+  parameter AXI_STRB_S2C_WIDTH      = AXI_DATA_S2C_WIDTH/8,
+  parameter LOG_DEPTH               = 3,
+  // CLUSTER TO SOC CDC AXI PARAMETER
+  localparam S2C_AW_WIDTH           = AXI_ID_IN_WIDTH+AXI_ADDR_WIDTH+AXI_USER_WIDTH+$bits(axi_pkg::len_t)+$bits(axi_pkg::size_t)+$bits(axi_pkg::burst_t)+$bits(axi_pkg::cache_t)+$bits(axi_pkg::prot_t)+$bits(axi_pkg::qos_t)+$bits(axi_pkg::region_t)+$bits(axi_pkg::atop_t)+1,
+  localparam S2C_W_WIDTH            = AXI_USER_WIDTH+AXI_STRB_WIDTH_IN+AXI_DATA_IN_WIDTH+1,
+  localparam S2C_R_WIDTH            = AXI_ID_IN_WIDTH+AXI_DATA_IN_WIDTH+AXI_USER_WIDTH+$bits(axi_pkg::resp_t)+1,
+  localparam S2C_B_WIDTH            = AXI_USER_WIDTH+AXI_ID_IN_WIDTH+$bits(axi_pkg::resp_t),
+  localparam S2C_AR_WIDTH           = AXI_ID_IN_WIDTH+AXI_ADDR_WIDTH+AXI_USER_WIDTH+$bits(axi_pkg::len_t)+$bits(axi_pkg::size_t)+$bits(axi_pkg::burst_t)+$bits(axi_pkg::cache_t)+$bits(axi_pkg::prot_t)+$bits(axi_pkg::qos_t)+$bits(axi_pkg::region_t)+1,
+  // CLUSTER TO SOC CDC AXI PARAMETERS
+  localparam C2S_AW_WIDTH           = AXI_ID_OUT_WIDTH+AXI_ADDR_WIDTH+AXI_USER_WIDTH+$bits(axi_pkg::len_t)+$bits(axi_pkg::size_t)+$bits(axi_pkg::burst_t)+$bits(axi_pkg::cache_t)+$bits(axi_pkg::prot_t)+$bits(axi_pkg::qos_t)+$bits(axi_pkg::region_t)+$bits(axi_pkg::atop_t)+1,
+  localparam C2S_W_WIDTH            = AXI_USER_WIDTH+AXI_STRB_WIDTH_OUT+AXI_DATA_OUT_WIDTH+1,
+  localparam C2S_R_WIDTH            = AXI_ID_OUT_WIDTH+AXI_DATA_OUT_WIDTH+AXI_USER_WIDTH+$bits(axi_pkg::resp_t)+1,
+  localparam C2S_B_WIDTH            = AXI_USER_WIDTH+AXI_ID_OUT_WIDTH+$bits(axi_pkg::resp_t),
+  localparam C2S_AR_WIDTH           = AXI_ID_OUT_WIDTH+AXI_ADDR_WIDTH+AXI_USER_WIDTH+$bits(axi_pkg::len_t)+$bits(axi_pkg::size_t)+$bits(axi_pkg::burst_t)+$bits(axi_pkg::cache_t)+$bits(axi_pkg::prot_t)+$bits(axi_pkg::qos_t)+$bits(axi_pkg::region_t)+1
+
+  localparam ASYNC_C2S_AW_DATA_WIDTH = (2**LOG_DEPTH)*C2S_AW_WIDTH,
+  localparam ASYNC_C2S_W_DATA_WIDTH  = (2**LOG_DEPTH)*C2S_W_WIDTH,
+  localparam ASYNC_C2S_B_DATA_WIDTH  = (2**LOG_DEPTH)*C2S_B_WIDTH,
+  localparam ASYNC_C2S_AR_DATA_WIDTH = (2**LOG_DEPTH)*C2S_AR_WIDTH,
+  localparam ASYNC_C2S_R_DATA_WIDTH  = (2**LOG_DEPTH)*C2S_R_WIDTH,
+  
+  localparam ASYNC_S2C_AW_DATA_WIDTH = (2**LOG_DEPTH)*S2C_AW_WIDTH,
+  localparam ASYNC_S2C_W_DATA_WIDTH  = (2**LOG_DEPTH)*S2C_W_WIDTH,
+  localparam ASYNC_S2C_B_DATA_WIDTH  = (2**LOG_DEPTH)*S2C_B_WIDTH,
+  localparam ASYNC_S2C_AR_DATA_WIDTH = (2**LOG_DEPTH)*S2C_AR_WIDTH,
+  localparam ASYNC_S2C_R_DATA_WIDTH  = (2**LOG_DEPTH)*S2C_R_WIDTH 
 )
 (
   input logic                                    clk_i,
@@ -464,14 +462,7 @@ module pulp_cluster
     .AXI_DATA_WIDTH ( AXI_DATA_C2S_WIDTH ),
     .AXI_ID_WIDTH   ( AXI_ID_IN_WIDTH    ),
     .AXI_USER_WIDTH ( AXI_USER_WIDTH     )
-  ) s_data_slave_64(); 
-
-  AXI_BUS #(
-    .AXI_ADDR_WIDTH ( AXI_ADDR_WIDTH     ),
-    .AXI_DATA_WIDTH ( AXI_DATA_S2C_WIDTH ),
-    .AXI_ID_WIDTH   ( AXI_ID_IN_WIDTH    ),
-    .AXI_USER_WIDTH ( AXI_USER_WIDTH     )
-  ) s_data_slave_32(); 
+  ) s_data_slave(); 
 
   AXI_BUS #(
     .AXI_ADDR_WIDTH ( AXI_ADDR_WIDTH     ),
@@ -564,13 +555,13 @@ module pulp_cluster
     .instr_slave   ( s_core_instr_bus  ),
     .data_slave    ( s_core_ext_bus    ),
     .dma_slave     ( s_dma_ext_bus     ),
-    .ext_slave     ( s_data_slave_64   ),
+    .ext_slave     ( s_data_slave      ),
     .tcdm_master   ( s_ext_tcdm_bus    ),
     .periph_master ( s_ext_mperiph_bus ),
     .ext_master    ( s_data_master     )
   );
 
-  axi2mem_wrap #(
+  axi2tcdm_wrap #(
     .NB_DMAS        ( NB_DMAS            ),
     .AXI_ADDR_WIDTH ( AXI_ADDR_WIDTH     ),
     .AXI_DATA_WIDTH ( AXI_DATA_C2S_WIDTH ),
@@ -1446,8 +1437,8 @@ module pulp_cluster
    s2c_req_t      dst_req;
    s2c_resp_t     dst_resp;
    
-  `AXI_ASSIGN_FROM_REQ(s_data_slave_32,dst_req)
-  `AXI_ASSIGN_TO_RESP(dst_resp,s_data_slave_32)
+  `AXI_ASSIGN_FROM_REQ(s_data_slave,dst_req)
+  `AXI_ASSIGN_TO_RESP(dst_resp,s_data_slave)
    
   axi_cdc_dst #(
      .aw_chan_t (s2c_aw_chan_t),
@@ -1479,20 +1470,6 @@ module pulp_cluster
      .async_data_slave_r_rptr_i        ( async_data_slave_r_rptr_i  ),
      .async_data_slave_r_data_o        ( async_data_slave_r_data_o  )  
     );                
-
-  axi_dw_converter_intf #(
-    .AXI_ID_WIDTH            ( AXI_ID_IN_WIDTH    ),
-    .AXI_ADDR_WIDTH          ( AXI_ADDR_WIDTH     ),
-    .AXI_SLV_PORT_DATA_WIDTH ( AXI_DATA_S2C_WIDTH ),
-    .AXI_MST_PORT_DATA_WIDTH ( AXI_DATA_C2S_WIDTH ),
-    .AXI_USER_WIDTH          ( AXI_USER_WIDTH     ),
-    .AXI_MAX_READS           ( 1                  )
-  ) axi_dw_UPSIZE_32_64_wrap_i (
-    .clk_i  ( clk_i           ),
-    .rst_ni ( s_rst_n         ),
-    .slv    ( s_data_slave_32 ),
-    .mst    ( s_data_slave_64 )
-  );
    
   /* event synchronizers */
   cdc_fifo_gray_dst #(
