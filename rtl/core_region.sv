@@ -17,7 +17,6 @@
  */
 
 `include "pulp_soc_defines.sv"
-`include "periph_bus_defines.sv"
 
 
 // USER DEFINED MACROS to improve self-testing capabilities
@@ -52,7 +51,7 @@ module core_region
   parameter SHARED_FP           =  0,
   parameter SHARED_FP_DIVSQRT   =  0,
 
-  parameter DEBUG_START_ADDR    = `DEBUG_START_ADDR,
+  parameter DEBUG_START_ADDR    = 32'h1A11_0000,
 
   parameter L2_SLM_FILE         = "./slm_files/l2_stim.slm",
   parameter ROM_SLM_FILE        = "../sw/apps/boot/slm_files/l2_stim.slm"
