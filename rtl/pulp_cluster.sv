@@ -561,7 +561,7 @@ module pulp_cluster
     .ext_master    ( s_data_master     )
   );
 
-  axi2tcdm_wrap #(
+  cl_axi2mem_wrap #(
     .NB_DMAS        ( NB_DMAS            ),
     .AXI_ADDR_WIDTH ( AXI_ADDR_WIDTH     ),
     .AXI_DATA_WIDTH ( AXI_DATA_OUT_WIDTH ),

@@ -17,9 +17,9 @@
 package pulp_cluster_package;
   
   typedef struct packed {
-      logic [31:0] idx;
-      logic [31:0] start_addr;
-      logic [31:0] end_addr;
+      logic [63:0] idx;
+      logic [63:0] start_addr;
+      logic [63:0] end_addr;
   } addr_map_rule_t;
 
 

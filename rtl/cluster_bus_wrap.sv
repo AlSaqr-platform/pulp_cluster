@@ -62,8 +62,8 @@ module cluster_bus_wrap
   else if (AXI_ID_OUT_WIDTH > AXI_ID_IN_WIDTH + $clog2(NB_SLAVE))
     $warning("ID width of the AXI output port has the wrong length. It is larger than the required value. Trim it to the right length to get rid of this warning.");
 
-  if (AXI_ADDR_WIDTH != 32)
-    $fatal(1,"Address map is only defined for 32-bit addresses!");
+  if (AXI_ADDR_WIDTH != 64)
+    $fatal(1,"Address map is only defined for 64-bit addresses!");
   if (TCDM_SIZE == 0)
     $fatal(1,"TCDM size must be non-zero!");
   if (TCDM_SIZE >128*1024)
@@ -97,8 +97,8 @@ module cluster_bus_wrap
   `AXI_ASSIGN(ext_master   , axi_masters[2])
   
   // address map
-  logic [31:0] cluster_base_addr;
-  assign cluster_base_addr = 32'h1000_0000 + ( cluster_id_i << 22);
+  logic [63:0] cluster_base_addr;
+  assign cluster_base_addr = 64'h1000_0000 + ( cluster_id_i << 22);
   localparam int unsigned N_RULES = 3;
   pulp_cluster_package::addr_map_rule_t [N_RULES-1:0] addr_map; 
 
@@ -110,12 +110,12 @@ module cluster_bus_wrap
   };
   assign addr_map[1] = '{ // Peripherals
     idx:  1,
-    start_addr: cluster_base_addr + 32'h0020_0000,
-    end_addr:   cluster_base_addr + 32'h0040_0000
+    start_addr: cluster_base_addr + 64'h0020_0000,
+    end_addr:   cluster_base_addr + 64'h0040_0000
   };
   assign addr_map[2] = '{ // everything above cluster to ext_slave
     idx:  2,
-    start_addr: cluster_base_addr + 32'h0040_0000,
+    start_addr: cluster_base_addr + 64'h0040_0000,
     end_addr:   32'hFFFF_FFFF
   };
     
@@ -134,6 +134,7 @@ module cluster_bus_wrap
                                                     LatencyMode: axi_pkg::NO_LATENCY, // CUT_ALL_AX | axi_pkg::DemuxW,
                                                     AxiIdWidthSlvPorts: AXI_ID_IN_WIDTH,
                                                     AxiIdUsedSlvPorts: AXI_ID_IN_WIDTH,
+                                                    UniqueIds: 1'b0,
                                                     AxiAddrWidth: AXI_ADDR_WIDTH,
                                                     AxiDataWidth: AXI_DATA_WIDTH,
                                                     NoAddrRules: N_RULES
