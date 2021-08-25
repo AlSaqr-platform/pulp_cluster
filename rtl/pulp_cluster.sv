@@ -459,14 +459,14 @@ module pulp_cluster
   
   AXI_BUS #(
     .AXI_ADDR_WIDTH ( AXI_ADDR_WIDTH     ),
-    .AXI_DATA_WIDTH ( AXI_DATA_C2S_WIDTH ),
+    .AXI_DATA_WIDTH ( AXI_DATA_OUT_WIDTH ),
     .AXI_ID_WIDTH   ( AXI_ID_IN_WIDTH    ),
     .AXI_USER_WIDTH ( AXI_USER_WIDTH     )
   ) s_data_slave(); 
 
   AXI_BUS #(
     .AXI_ADDR_WIDTH ( AXI_ADDR_WIDTH     ),
-    .AXI_DATA_WIDTH ( AXI_DATA_C2S_WIDTH ),
+    .AXI_DATA_WIDTH ( AXI_DATA_OUT_WIDTH ),
     .AXI_ID_WIDTH   ( AXI_ID_OUT_WIDTH   ),
     .AXI_USER_WIDTH ( AXI_USER_WIDTH     )
   ) s_data_master(); 
@@ -475,7 +475,7 @@ module pulp_cluster
 
   AXI_BUS #(
     .AXI_ADDR_WIDTH ( AXI_ADDR_WIDTH     ),
-    .AXI_DATA_WIDTH ( AXI_DATA_C2S_WIDTH ),
+    .AXI_DATA_WIDTH ( AXI_DATA_OUT_WIDTH ),
     .AXI_ID_WIDTH   ( AXI_ID_OUT_WIDTH   ),
     .AXI_USER_WIDTH ( AXI_USER_WIDTH     )
   ) s_core_instr_bus(); 
@@ -494,7 +494,7 @@ module pulp_cluster
   // core per2axi -> ext
   AXI_BUS #(
     .AXI_ADDR_WIDTH ( AXI_ADDR_WIDTH     ),
-    .AXI_DATA_WIDTH ( AXI_DATA_C2S_WIDTH ),
+    .AXI_DATA_WIDTH ( AXI_DATA_OUT_WIDTH ),
     .AXI_ID_WIDTH   ( AXI_ID_IN_WIDTH    ),
     .AXI_USER_WIDTH ( AXI_USER_WIDTH     )
   ) s_core_ext_bus(); 
@@ -502,7 +502,7 @@ module pulp_cluster
   // DMA -> ext
   AXI_BUS #(
     .AXI_ADDR_WIDTH ( AXI_ADDR_WIDTH     ),
-    .AXI_DATA_WIDTH ( AXI_DATA_C2S_WIDTH ),
+    .AXI_DATA_WIDTH ( AXI_DATA_OUT_WIDTH ),
     .AXI_ID_WIDTH   ( AXI_ID_IN_WIDTH    ),
     .AXI_USER_WIDTH ( AXI_USER_WIDTH     )
   ) s_dma_ext_bus(); 
@@ -510,7 +510,7 @@ module pulp_cluster
   // ext -> axi2mem
   AXI_BUS #(
     .AXI_ADDR_WIDTH ( AXI_ADDR_WIDTH     ),
-    .AXI_DATA_WIDTH ( AXI_DATA_C2S_WIDTH ),
+    .AXI_DATA_WIDTH ( AXI_DATA_OUT_WIDTH ),
     .AXI_ID_WIDTH   ( AXI_ID_OUT_WIDTH   ),
     .AXI_USER_WIDTH ( AXI_USER_WIDTH     )
   ) s_ext_tcdm_bus(); 
@@ -518,7 +518,7 @@ module pulp_cluster
   // cluster bus -> axi2per 
   AXI_BUS #(
     .AXI_ADDR_WIDTH ( AXI_ADDR_WIDTH     ),
-    .AXI_DATA_WIDTH ( AXI_DATA_C2S_WIDTH ),
+    .AXI_DATA_WIDTH ( AXI_DATA_OUT_WIDTH ),
     .AXI_ID_WIDTH   ( AXI_ID_OUT_WIDTH   ),
     .AXI_USER_WIDTH ( AXI_USER_WIDTH     )
   ) s_ext_mperiph_bus();
@@ -543,7 +543,7 @@ module pulp_cluster
     .DMA_NB_OUTSND_BURSTS ( NB_OUTSND_BURSTS   ),
     .TCDM_SIZE            ( TCDM_SIZE          ),
     .AXI_ADDR_WIDTH       ( AXI_ADDR_WIDTH     ),
-    .AXI_DATA_WIDTH       ( AXI_DATA_C2S_WIDTH ),
+    .AXI_DATA_WIDTH       ( AXI_DATA_OUT_WIDTH ),
     .AXI_USER_WIDTH       ( AXI_USER_WIDTH     ),
     .AXI_ID_IN_WIDTH      ( AXI_ID_IN_WIDTH    ),
     .AXI_ID_OUT_WIDTH     ( AXI_ID_OUT_WIDTH   )
@@ -564,7 +564,7 @@ module pulp_cluster
   axi2tcdm_wrap #(
     .NB_DMAS        ( NB_DMAS            ),
     .AXI_ADDR_WIDTH ( AXI_ADDR_WIDTH     ),
-    .AXI_DATA_WIDTH ( AXI_DATA_C2S_WIDTH ),
+    .AXI_DATA_WIDTH ( AXI_DATA_OUT_WIDTH ),
     .AXI_USER_WIDTH ( AXI_USER_WIDTH     ),
     .AXI_ID_WIDTH   ( AXI_ID_OUT_WIDTH   )
   ) axi2mem_wrap_i (
@@ -578,7 +578,7 @@ module pulp_cluster
 
   axi2per_wrap #(
     .AXI_ADDR_WIDTH ( AXI_ADDR_WIDTH     ),
-    .AXI_DATA_WIDTH ( AXI_DATA_C2S_WIDTH ),
+    .AXI_DATA_WIDTH ( AXI_DATA_OUT_WIDTH ),
     .AXI_ID_WIDTH   ( AXI_ID_OUT_WIDTH   ),
     .AXI_USER_WIDTH ( AXI_USER_WIDTH     )
   ) axi2per_wrap_i (
@@ -629,7 +629,7 @@ module pulp_cluster
     .PER_ADDR_WIDTH ( 32                   ),
     .PER_ID_WIDTH   ( NB_CORES+NB_MPERIPHS ),
     .AXI_ADDR_WIDTH ( AXI_ADDR_WIDTH       ),
-    .AXI_DATA_WIDTH ( AXI_DATA_C2S_WIDTH   ),
+    .AXI_DATA_WIDTH ( AXI_DATA_OUT_WIDTH   ),
     .AXI_USER_WIDTH ( AXI_USER_WIDTH       ),
     .AXI_ID_WIDTH   ( AXI_ID_IN_WIDTH      )
   ) per2axi_wrap_i (
@@ -694,7 +694,7 @@ module pulp_cluster
     .NB_OUTSND_BURSTS   ( NB_OUTSND_BURSTS   ),
     .MCHAN_BURST_LENGTH ( MCHAN_BURST_LENGTH ),
     .AXI_ADDR_WIDTH     ( AXI_ADDR_WIDTH     ),
-    .AXI_DATA_WIDTH     ( AXI_DATA_C2S_WIDTH ),
+    .AXI_DATA_WIDTH     ( AXI_DATA_OUT_WIDTH ),
     .AXI_ID_WIDTH       ( AXI_ID_IN_WIDTH    ),
     .AXI_USER_WIDTH     ( AXI_USER_WIDTH     ),
     .PE_ID_WIDTH        ( NB_CORES + 1       ),
@@ -1078,7 +1078,7 @@ module pulp_cluster
     .AXI_ID               ( AXI_ID_OUT_WIDTH    ), //= 6,
     .AXI_ADDR             ( AXI_ADDR_WIDTH      ), //= 32,
     .AXI_USER             ( AXI_USER_WIDTH      ), //= 6,
-    .AXI_DATA             ( AXI_DATA_C2S_WIDTH  ), //= 64,
+    .AXI_DATA             ( AXI_DATA_OUT_WIDTH  ), //= 64,
 
     .USE_REDUCED_TAG      ( USE_REDUCED_TAG     ), //= "TRUE",  // TRUE | FALSE
     .L2_SIZE              ( L2_SIZE             )  //= 512*1024 // Size of max(L2 ,ROM) program memory in Byte
@@ -1171,7 +1171,7 @@ module pulp_cluster
     .AXI_ID           ( AXI_ID_OUT_WIDTH   ),
     .AXI_ADDR         ( AXI_ADDR_WIDTH     ),
     .AXI_USER         ( AXI_USER_WIDTH     ),
-    .AXI_DATA         ( AXI_DATA_C2S_WIDTH ),
+    .AXI_DATA         ( AXI_DATA_OUT_WIDTH ),
     .USE_REDUCED_TAG  ( USE_REDUCED_TAG    ),
     .L2_SIZE          ( L2_SIZE            ) 
   ) icache_top_i (
@@ -1268,7 +1268,7 @@ module pulp_cluster
     //AXI PARAMETER
     .AXI_ID                ( AXI_ID_OUT_WIDTH  ),
     .AXI_USER              ( AXI_USER_WIDTH    ),
-    .AXI_DATA              ( AXI_DATA_C2S_WIDTH    ),
+    .AXI_DATA              ( AXI_DATA_OUT_WIDTH    ),
     .AXI_ADDR              ( AXI_ADDR_WIDTH    )
   ) icache_top_i (
     // ---------------------------------------------------------------
