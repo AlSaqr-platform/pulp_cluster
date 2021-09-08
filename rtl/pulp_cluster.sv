@@ -1359,15 +1359,18 @@ module pulp_cluster
    
   /* TCDM banks */
   tcdm_banks_wrap #(
-    .BANK_SIZE ( TCDM_NUM_ROWS ),
-    .NB_BANKS  ( NB_TCDM_BANKS )
+    .BankSize (TCDM_NUM_ROWS),
+    .NbBanks  (NB_TCDM_BANKS),
+    .DataWidth(DATA_WIDTH   ),
+    .AddrWidth(ADDR_WIDTH   ),
+    .BeWidth  (BE_WIDTH     ),
+    .IdWidth  (TCDM_ID_WIDTH)
   ) tcdm_banks_i (
-    .clk_i       ( clk_cluster     ),
-    .rst_ni      ( s_rst_n         ),
-    .init_ni     ( s_init_n        ),
-    .test_mode_i ( test_mode_i     ),
-    .pwdn_i      ( 1'b0            ),
-    .tcdm_slave  ( s_tcdm_bus_sram )   //PMU ??
+    .clk_i      (clk_cluster    ),
+    .rst_ni     (s_rst_n        ),
+    .test_mode_i(test_mode_i    ),
+    
+    .tcdm_slave (s_tcdm_bus_sram)  //PMU ??
   );
   
   /* AXI interconnect infrastructure (slices, size conversion) */ 
