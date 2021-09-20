@@ -49,7 +49,7 @@ module tcdm_banks_wrap #(
     assign tcdm_slave[i].gnt    =  1'b1;
  
 
-    `ifndef TARGET_SYNTHESIS
+    `ifndef TARGET_ASIC
     tc_sram     #(
       .Latency    (1        ), // Latency when the read data is available
       .SimInit    ("random" ), // Simulation initialization
