@@ -66,8 +66,6 @@ module cluster_bus_wrap
     $fatal(1,"Address map is only defined for 64-bit addresses!");
   if (TCDM_SIZE == 0)
     $fatal(1,"TCDM size must be non-zero!");
-  if (TCDM_SIZE >128*1024)
-    $fatal(1,"TCDM size exceeds available address space in cluster bus!");
    
 
   // Crossbar

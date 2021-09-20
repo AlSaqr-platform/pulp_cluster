@@ -54,12 +54,12 @@ module tcdm_banks_wrap #(
       .Latency    (1        ), // Latency when the read data is available
       .SimInit    ("random" ), // Simulation initialization
       .PrintSimCfg(0        ),  // Print configuration      
+      .ByteWidth  (8        ), // Width of a data byte
     `else
     tc_sram_gf22 #(
     `endif 
       .NumWords   (BankSize ), // Number of Words in data array
       .DataWidth  (DataWidth), // Data signal width
-      .ByteWidth  (8        ), // Width of a data byte
       .NumPorts   (1        ) // Number of read and write ports
     ) i_bank (
       .clk_i  (clk_i                                    ), // Clock
