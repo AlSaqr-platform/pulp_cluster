@@ -21,7 +21,7 @@
 `include "axi/assign.svh"
 `include "axi/typedef.svh"
 
-// MODDING THIS ONE
+
 module cluster_bus_wrap
     import axi_pkg::xbar_cfg_t;
     import pulp_cluster_package::addr_map_rule_t;
