@@ -231,8 +231,8 @@ module pulp_cluster
   // WRITE RESPONSE CHANNEL                        
   input logic [LOG_DEPTH:0]                      async_data_master_b_wptr_i,
   input logic [ASYNC_C2S_B_DATA_WIDTH-1:0]       async_data_master_b_data_i,
-  output logic [LOG_DEPTH:0]                     async_data_master_b_rptr_o
-   
+  output logic [LOG_DEPTH:0]                     async_data_master_b_rptr_o,
+  AXI_LITE_ASYNC_GRAY.Master                     async_tlb_cfg_master
 );
 
   //Ensure that the input AXI ID width is big enough to accomodate the accomodate the IDs of internal wiring
@@ -523,6 +523,14 @@ module pulp_cluster
     .AXI_USER_WIDTH ( AXI_USER_WIDTH     )
   ) s_ext_mperiph_bus();
 
+  // cluster bus -> c2h_tlb_cfg 
+  AXI_BUS #(
+    .AXI_ADDR_WIDTH ( AXI_ADDR_WIDTH     ),
+    .AXI_DATA_WIDTH ( AXI_DATA_OUT_WIDTH ),
+    .AXI_ID_WIDTH   ( AXI_ID_OUT_WIDTH   ),
+    .AXI_USER_WIDTH ( AXI_USER_WIDTH     )
+  )  s_tlb_cfg_bus();
+
   /* reset generator */
   rstgen rstgen_i (
     .clk_i      ( clk_i       ),
@@ -548,17 +556,18 @@ module pulp_cluster
     .AXI_ID_IN_WIDTH      ( AXI_ID_IN_WIDTH    ),
     .AXI_ID_OUT_WIDTH     ( AXI_ID_OUT_WIDTH   )
   ) cluster_bus_wrap_i (
-    .clk_i         ( clk_cluster       ),
-    .rst_ni        ( s_rst_n           ),
-    .test_en_i     ( test_mode_i       ),
-    .cluster_id_i  ( cluster_id_i      ),
-    .instr_slave   ( s_core_instr_bus  ),
-    .data_slave    ( s_core_ext_bus    ),
-    .dma_slave     ( s_dma_ext_bus     ),
-    .ext_slave     ( s_data_slave      ),
-    .tcdm_master   ( s_ext_tcdm_bus    ),
-    .periph_master ( s_ext_mperiph_bus ),
-    .ext_master    ( s_data_master     )
+    .clk_i          ( clk_cluster       ),
+    .rst_ni         ( s_rst_n           ),
+    .test_en_i      ( test_mode_i       ),
+    .cluster_id_i   ( cluster_id_i      ),
+    .instr_slave    ( s_core_instr_bus  ),
+    .data_slave     ( s_core_ext_bus    ),
+    .dma_slave      ( s_dma_ext_bus     ),
+    .ext_slave      ( s_data_slave      ),
+    .tcdm_master    ( s_ext_tcdm_bus    ),
+    .periph_master  ( s_ext_mperiph_bus ),
+    .ext_master     ( s_data_master     ),
+    .tlb_cfg_master ( s_tlb_cfg_bus     )
   );
 
   cl_axi2mem_wrap #(
@@ -1424,6 +1433,54 @@ module pulp_cluster
      .async_data_master_r_rptr_o       ( async_data_master_r_rptr_o  ),
      .async_data_master_r_data_i       ( async_data_master_r_data_i  )  
     );
+
+//    c2s_req_t   cfg_req ;
+//    c2s_resp_t  cfg_resp;   
+//    
+//    `AXI_ASSIGN_TO_REQ(cfg_req,s_tlb_cfg_bus)
+//    `AXI_ASSIGN_FROM_RESP(s_tlb_cfg_bus,cfg_resp)
+//  
+//    axi_cdc_src #(
+//       .aw_chan_t (c2s_aw_chan_t),
+//       .w_chan_t  (c2s_w_chan_t),
+//       .b_chan_t  (c2s_b_chan_t),     
+//       .r_chan_t  (c2s_r_chan_t),
+//       .ar_chan_t (c2s_ar_chan_t),
+//       .axi_req_t (c2s_req_t    ),
+//       .axi_resp_t(c2s_resp_t   ),
+//      .LogDepth        ( LOG_DEPTH              )
+//      ) i_tlb_cfg_cdc_src (
+//       .src_rst_ni                       ( s_rst_n                     ),
+//       .src_clk_i                        ( clk_cluster                 ),
+//       .src_req_i                        ( cfg_req                     ),
+//       .src_resp_o                       ( cfg_resp                    ),
+//       .async_data_master_aw_wptr_o      ( async_cfg_master_aw_wptr_o ),   
+//       .async_data_master_aw_rptr_i      ( async_cfg_master_aw_rptr_i ),
+//       .async_data_master_aw_data_o      ( async_cfg_master_aw_data_o ),
+//       .async_data_master_w_wptr_o       ( async_cfg_master_w_wptr_o  ),
+//       .async_data_master_w_rptr_i       ( async_cfg_master_w_rptr_i  ),
+//       .async_data_master_w_data_o       ( async_cfg_master_w_data_o  ),
+//       .async_data_master_ar_wptr_o      ( async_cfg_master_ar_wptr_o ),
+//       .async_data_master_ar_rptr_i      ( async_cfg_master_ar_rptr_i ),
+//       .async_data_master_ar_data_o      ( async_cfg_master_ar_data_o ),
+//       .async_data_master_b_wptr_i       ( async_cfg_master_b_wptr_i  ),
+//       .async_data_master_b_rptr_o       ( async_cfg_master_b_rptr_o  ),
+//       .async_data_master_b_data_i       ( async_cfg_master_b_data_i  ),
+//       .async_data_master_r_wptr_i       ( async_cfg_master_r_wptr_i  ),
+//       .async_data_master_r_rptr_o       ( async_cfg_master_r_rptr_o  ),
+//       .async_data_master_r_data_i       ( async_cfg_master_r_data_i  )  
+//      );
+
+ axi_lite_cdc_src_intf #(
+  .AXI_ADDR_WIDTH       ( 32                   ),
+  .AXI_DATA_WIDTH       ( 32                   ),
+  .LOG_DEPTH            ( LOG_DEPTH            )
+ ) i_tlb_cfg_cdc_src    (
+  .src_clk_i            ( clk_cluster          ),
+  .src_rst_ni           ( s_rst_n              ),
+  .src                  ( s_tlb_cfg_bus        ),
+  .dst                  ( async_tlb_cfg_master )
+ );
       
    // SOC TO CLUSTER
 
