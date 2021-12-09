@@ -1495,17 +1495,6 @@ module pulp_cluster
        .async_data_master_r_rptr_o       ( async_cfg_master_r_rptr_o  ),
        .async_data_master_r_data_i       ( async_cfg_master_r_data_i  )  
       );
-
-// axi_lite_cdc_src_intf #(
-//  .AXI_ADDR_WIDTH       ( 32                   ),
-//  .AXI_DATA_WIDTH       ( 32                   ),
-//  .LOG_DEPTH            ( LOG_DEPTH            )
-// ) i_tlb_cfg_cdc_src    (
-//  .src_clk_i            ( clk_cluster          ),
-//  .src_rst_ni           ( s_rst_n              ),
-//  .src                  ( s_tlb_cfg_bus        ),
-//  .dst                  ( async_tlb_cfg_master )
-// );
       
    // SOC TO CLUSTER
 
