@@ -1,0 +1,16 @@
+package:
+  name: per2axi
+
+dependencies:
+  axi_slice: { git: "https://github.com/pulp-platform/axi_slice.git", rev: atomics }
+  # axi_slice: { path: "../axi_slice" }
+  common_cells: { git: "https://github.com/pulp-platform/common_cells.git", version: 1.21.0 }
+  # cv32e40p: { git: "https://github.com/pulp-platform/cv32e40p.git", rev: "shaheen-v0.0"} # To be updated to openhwgroup repository
+  # riscv: { path: "../riscv" }
+  
+
+sources:
+  - src/per2axi_busy_unit.sv
+  - src/per2axi_req_channel.sv
+  - src/per2axi_res_channel.sv
+  - src/per2axi.sv
