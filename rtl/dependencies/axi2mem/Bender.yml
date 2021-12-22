@@ -10,4 +10,4 @@ dependencies:
 
 sources:
   - cluster_riscv_defines.sv
-  - axi2mem.sv
+  - axi2mem_cluster.sv
