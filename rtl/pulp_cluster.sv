@@ -1334,7 +1334,7 @@ module pulp_cluster
   //   .mst    (s_core_instr_bus)
   // );
 
-  `AXI_ASSIGN(s_core_instr_bus, icache_axi)
+  // `AXI_ASSIGN(s_core_instr_bus, icache_axi)
 
   // Tie AWATOP, which is not driven by the instruction cache, off.
   assign icache_axi.aw_atop = '0;
