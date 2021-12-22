@@ -168,38 +168,38 @@ sources:
       - rtl/dependencies/cluster_peripherals/event_unit/include
     files:
       # Level 0
-      - rtl/dependencies/cluster_peripherals/event_unit/event_unit/HW_barrier_logic.sv
-      - rtl/dependencies/cluster_peripherals/event_unit/event_unit/event_unit_arbiter.sv
-      - rtl/dependencies/cluster_peripherals/event_unit/event_unit/event_unit_mux.sv
-      - rtl/dependencies/cluster_peripherals/event_unit/event_unit/event_unit_sm.sv
-      - rtl/dependencies/cluster_peripherals/event_unit/event_unit/interrupt_mask.sv
-      - rtl/dependencies/cluster_peripherals/event_unit/event_unit/interfaces/bbmux_config_bus.sv
-      - rtl/dependencies/cluster_peripherals/event_unit/event_unit/interfaces/clkgate_config_bus.sv
+      - rtl/dependencies/cluster_peripherals/event_unit/HW_barrier_logic.sv
+      - rtl/dependencies/cluster_peripherals/event_unit/event_unit_arbiter.sv
+      - rtl/dependencies/cluster_peripherals/event_unit/event_unit_mux.sv
+      - rtl/dependencies/cluster_peripherals/event_unit/event_unit_sm.sv
+      - rtl/dependencies/cluster_peripherals/event_unit/interrupt_mask.sv
+      - rtl/dependencies/cluster_peripherals/event_unit/interfaces/bbmux_config_bus.sv
+      - rtl/dependencies/cluster_peripherals/event_unit/interfaces/clkgate_config_bus.sv
       # Level 1
-      - rtl/dependencies/cluster_peripherals/event_unit/event_unit/HW_barrier.sv
-      - rtl/dependencies/cluster_peripherals/event_unit/event_unit/event_unit_input.sv
+      - rtl/dependencies/cluster_peripherals/event_unit/HW_barrier.sv
+      - rtl/dependencies/cluster_peripherals/event_unit/event_unit_input.sv
       # Level 2
-      - rtl/dependencies/cluster_peripherals/event_unit/event_unit/event_unit.sv
+      - rtl/dependencies/cluster_peripherals/event_unit/event_unit.sv
 
   # Level 0
-  - rtl/dependencies/cluster_peripherals/event_unit/icache_ctrl_unit/interfaces/l0_ctrl_unit_bus.sv
-  - rtl/dependencies/cluster_peripherals/event_unit/icache_ctrl_unit/interfaces/mp_icache_ctrl_unit_bus.sv
-  - rtl/dependencies/cluster_peripherals/event_unit/icache_ctrl_unit/interfaces/mp_pf_icache_ctrl_unit_bus.sv
-  - rtl/dependencies/cluster_peripherals/event_unit/icache_ctrl_unit/interfaces/pri_icache_ctrl_unit_bus.sv
-  - rtl/dependencies/cluster_peripherals/event_unit/icache_ctrl_unit/interfaces/sp_icache_ctrl_unit_bus.sv
+  - rtl/dependencies/cluster_peripherals/icache_ctrl_unit/interfaces/l0_ctrl_unit_bus.sv
+  - rtl/dependencies/cluster_peripherals/icache_ctrl_unit/interfaces/mp_icache_ctrl_unit_bus.sv
+  - rtl/dependencies/cluster_peripherals/icache_ctrl_unit/interfaces/mp_pf_icache_ctrl_unit_bus.sv
+  - rtl/dependencies/cluster_peripherals/icache_ctrl_unit/interfaces/pri_icache_ctrl_unit_bus.sv
+  - rtl/dependencies/cluster_peripherals/icache_ctrl_unit/interfaces/sp_icache_ctrl_unit_bus.sv
   # Level 1
-  - rtl/dependencies/cluster_peripherals/event_unit/icache_ctrl_unit/icache_ctrl_unit.sv
-  - rtl/dependencies/cluster_peripherals/event_unit/icache_ctrl_unit/mp_icache_ctrl_unit.sv
-  - rtl/dependencies/cluster_peripherals/event_unit/icache_ctrl_unit/mp_pf_icache_ctrl_unit.sv
-  - rtl/dependencies/cluster_peripherals/event_unit/icache_ctrl_unit/new_icache_ctrl_unit.sv
-  - rtl/dependencies/cluster_peripherals/event_unit/icache_ctrl_unit/pri_icache_ctrl_unit.sv
-  - rtl/dependencies/cluster_peripherals/event_unit/icache_ctrl_unit/sp_icache_ctrl_unit.sv
+  - rtl/dependencies/cluster_peripherals/icache_ctrl_unit/icache_ctrl_unit.sv
+  - rtl/dependencies/cluster_peripherals/icache_ctrl_unit/mp_icache_ctrl_unit.sv
+  - rtl/dependencies/cluster_peripherals/icache_ctrl_unit/mp_pf_icache_ctrl_unit.sv
+  - rtl/dependencies/cluster_peripherals/icache_ctrl_unit/new_icache_ctrl_unit.sv
+  - rtl/dependencies/cluster_peripherals/icache_ctrl_unit/pri_icache_ctrl_unit.sv
+  - rtl/dependencies/cluster_peripherals/icache_ctrl_unit/sp_icache_ctrl_unit.sv
 
   # Level 0
-  - rtl/dependencies/cluster_peripherals/event_unit/mmu_config_unit/interfaces/mmu_config_bus.sv
+  - rtl/dependencies/cluster_peripherals/mmu_config_unit/interfaces/mmu_config_bus.sv
   # Level 1
-  - rtl/dependencies/cluster_peripherals/event_unit/mmu_config_unit/mmu_config_unit.sv
+  - rtl/dependencies/cluster_peripherals/mmu_config_unit/mmu_config_unit.sv
 
-  - rtl/dependencies/cluster_peripherals/event_unit/perf_counters_unit/perf_counters_unit.sv
+  - rtl/dependencies/cluster_peripherals/perf_counters_unit/perf_counters_unit.sv
 
-  - rtl/dependencies/cluster_peripherals/event_unit/tcdm_pipe_unit/tcdm_pipe_unit.sv
+  - rtl/dependencies/cluster_peripherals/tcdm_pipe_unit/tcdm_pipe_unit.sv
