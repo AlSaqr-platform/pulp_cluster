@@ -34,11 +34,11 @@ sources:
   - rtl/dependencies/axi2per/axi2per_res_channel.sv
   - rtl/dependencies/axi2per/axi2per.sv
   # cluster_interconnect
-  - rtl/dependencies/rtl/interfaces/tcdm_bank_mem_bus.sv
-  - rtl/dependencies/rtl/interfaces/xbar_demux_bus.sv
-  - rtl/dependencies/rtl/interfaces/xbar_periph_bus.sv
-  - rtl/dependencies/rtl/interfaces/xbar_tcdm_bus_64.sv
-  - rtl/dependencies/rtl/interfaces/xbar_tcdm_bus.sv
+  - rtl/dependencies/cluster_interconnect/rtl/interfaces/tcdm_bank_mem_bus.sv
+  - rtl/dependencies/cluster_interconnect/rtl/interfaces/xbar_demux_bus.sv
+  - rtl/dependencies/cluster_interconnect/rtl/interfaces/xbar_periph_bus.sv
+  - rtl/dependencies/cluster_interconnect/rtl/interfaces/xbar_tcdm_bus_64.sv
+  - rtl/dependencies/cluster_interconnect/rtl/interfaces/xbar_tcdm_bus.sv
   # cluster_peripherals
   - rtl/dependencies/cluster_peripherals/cluster_control_unit/cluster_control_unit.sv
   # event_unit_flex
