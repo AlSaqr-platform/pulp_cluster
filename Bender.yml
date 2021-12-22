@@ -27,6 +27,7 @@ sources:
   - packages/pulp_cluster_package.sv
   - rtl/dependencies/axi2mem/cluster_riscv_defines.sv
   - rtl/dependencies/cluster_interconnect/rtl/tcdm_interconnect/tcdm_interconnect_pkg.sv
+  # Dependencies
   # axi2mem
   - rtl/dependencies/axi2mem/axi2mem.sv
   # axi2per
@@ -42,20 +43,20 @@ sources:
   # cluster_peripherals
   - rtl/dependencies/cluster_peripherals/cluster_control_unit/cluster_control_unit.sv
   # event_unit_flex
-  - message_bus.sv
-  - event_unit_core.sv
-  - event_unit_interface_mux.sv
-  - event_unit_top.sv
-  - soc_periph_fifo.sv
-  - interc_sw_evt_trig.sv
-  - hw_barrier_unit.sv
-  - hw_mutex_unit.sv
-  - hw_dispatch.sv
+  - rtl/dependencies/event_unit_flex/message_bus.sv
+  - rtl/dependencies/event_unit_flex/event_unit_core.sv
+  - rtl/dependencies/event_unit_flex/event_unit_interface_mux.sv
+  - rtl/dependencies/event_unit_flex/event_unit_top.sv
+  - rtl/dependencies/event_unit_flex/soc_periph_fifo.sv
+  - rtl/dependencies/event_unit_flex/interc_sw_evt_trig.sv
+  - rtl/dependencies/event_unit_flex/hw_barrier_unit.sv
+  - rtl/dependencies/event_unit_flex/hw_mutex_unit.sv
+  - rtl/dependencies/event_unit_flex/hw_dispatch.sv
   # per2axi
-  - src/per2axi_busy_unit.sv
-  - src/per2axi_req_channel.sv
-  - src/per2axi_res_channel.sv
-  - src/per2axi.sv
+  - rtl/dependencies/per2axi/src/per2axi_busy_unit.sv
+  - rtl/dependencies/per2axi/src/per2axi_req_channel.sv
+  - rtl/dependencies/per2axi/src/per2axi_res_channel.sv
+  - rtl/dependencies/per2axi/src/per2axi.sv
   # Level 0
   - rtl/axi2per_wrap.sv
   - rtl/axi_slice_wrap.sv
