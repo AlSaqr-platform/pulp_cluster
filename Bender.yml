@@ -7,28 +7,56 @@ dependencies:
   per2axi: { path: "rtl/dependencies/per2axi" }
   cluster_interconnect: { path: "rtl/dependencies/cluster_interconnect" }
   event_unit_flex: { path: "rtl/dependencies/event_unit_flex" }
-  mchan: { git: "https://github.com/pulp-platform/mchan.git", rev: atop }
   dma: { path: "rtl/dependencies/dma" }
   hier-icache: { git: "https://github.com/pulp-platform/hier-icache.git", rev: "1e94c16b8f3082af40cc7e579027dc485202c1d6" }
-  icache_mp_128_pf: { path: "rtl/dependencies/icache_mp_128_pf" }
   icache_private: { git: "https://github.com/AlSaqr-platform/icache_private.git", rev: "84436443d3a2dbad0b94a85c2c5cc8915632fd26" }
   cluster_peripherals: { path: "rtl/dependencies/cluster_peripherals" }
   fpu_interco: { git: "https://github.com/pulp-platform/fpu_interco.git", rev: "d217d616bccf53b2f97e766b8cf95fc7c8f87546" }
   axi: { git: "https://github.com/pulp-platform/axi.git", version: 0.29.1 }
-  timer_unit: { path: "rtl/dependencies/timer_unit" }
+  # timer_unit: { path: "rtl/dependencies/timer_unit" }
   common_cells: { git: "https://github.com/pulp-platform/common_cells.git", version: 1.13.1 }
   tech_cells_generic: { git: "https://github.com/pulp-platform/tech_cells_generic.git", version: 0.2.4 }
   cv32e40p: { git: "https://github.com/pulp-platform/cv32e40p.git", rev: "shaheen-v0.0"} # To be updated to openhwgroup repository
   timer_unit: { git: "https://github.com/pulp-platform/timer_unit.git", version: 1.0.0 }
-  ibex: { git: "https://github.com/lowRISC/ibex.git", rev: "pulpissimo-v6.1.1" }
   scm: { git: "https://github.com/pulp-platform/scm.git", version: 1.0.1}
 
 sources:
-  # Level 0
+  # Level -1
+  # Packages & defines
   - packages/apu_package.sv
   - packages/pulp_cluster_package.sv
   - rtl/dependencies/axi2mem/cluster_riscv_defines.sv
   - rtl/dependencies/cluster_interconnect/rtl/tcdm_interconnect/tcdm_interconnect_pkg.sv
+  # axi2mem
+  - rtl/dependencies/axi2mem/axi2mem.sv
+  # axi2per
+  - rtl/dependencies/axi2per/axi2per_req_channel.sv
+  - rtl/dependencies/axi2per/axi2per_res_channel.sv
+  - rtl/dependencies/axi2per/axi2per.sv
+  # cluster_interconnect
+  - rtl/dependencies/rtl/interfaces/tcdm_bank_mem_bus.sv
+  - rtl/dependencies/rtl/interfaces/xbar_demux_bus.sv
+  - rtl/dependencies/rtl/interfaces/xbar_periph_bus.sv
+  - rtl/dependencies/rtl/interfaces/xbar_tcdm_bus_64.sv
+  - rtl/dependencies/rtl/interfaces/xbar_tcdm_bus.sv
+  # cluster_peripherals
+  - rtl/dependencies/cluster_peripherals/cluster_control_unit/cluster_control_unit.sv
+  # event_unit_flex
+  - message_bus.sv
+  - event_unit_core.sv
+  - event_unit_interface_mux.sv
+  - event_unit_top.sv
+  - soc_periph_fifo.sv
+  - interc_sw_evt_trig.sv
+  - hw_barrier_unit.sv
+  - hw_mutex_unit.sv
+  - hw_dispatch.sv
+  # per2axi
+  - src/per2axi_busy_unit.sv
+  - src/per2axi_req_channel.sv
+  - src/per2axi_res_channel.sv
+  - src/per2axi.sv
+  # Level 0
   - rtl/axi2per_wrap.sv
   - rtl/axi_slice_wrap.sv
   - rtl/cluster_bus_wrap.sv
@@ -59,3 +87,118 @@ sources:
   - rtl/core_region.sv
   # Level 3
   - rtl/pulp_cluster.sv
+
+# Coming from cluster_interconnect Bender
+
+  - include_dirs:
+      - rtl/dependencies/cluster_interconnect/rtl/low_latency_interco
+    files:
+      # Level 0
+      - rtl/dependencies/cluster_interconnect/rtl/low_latency_interco/AddressDecoder_Req.sv
+      - rtl/dependencies/cluster_interconnect/rtl/low_latency_interco/AddressDecoder_Resp.sv
+      - rtl/dependencies/cluster_interconnect/rtl/low_latency_interco/FanInPrimitive_Req.sv
+      - rtl/dependencies/cluster_interconnect/rtl/low_latency_interco/FanInPrimitive_Resp.sv
+      - rtl/dependencies/cluster_interconnect/rtl/low_latency_interco/MUX2_REQ.sv
+      - rtl/dependencies/cluster_interconnect/rtl/low_latency_interco/TCDM_PIPE_REQ.sv
+      - rtl/dependencies/cluster_interconnect/rtl/low_latency_interco/TCDM_PIPE_RESP.sv
+      - rtl/dependencies/cluster_interconnect/rtl/low_latency_interco/TestAndSet.sv
+      - rtl/dependencies/cluster_interconnect/rtl/low_latency_interco/grant_mask.sv
+      - rtl/dependencies/cluster_interconnect/rtl/low_latency_interco/priority_Flag_Req.sv
+      # Level 1
+      - rtl/dependencies/cluster_interconnect/rtl/low_latency_interco/ArbitrationTree.sv
+      - rtl/dependencies/cluster_interconnect/rtl/low_latency_interco/ResponseTree.sv
+      # Level 2
+      - rtl/dependencies/cluster_interconnect/rtl/low_latency_interco/RequestBlock1CH.sv
+      - rtl/dependencies/cluster_interconnect/rtl/low_latency_interco/RequestBlock2CH.sv
+      - rtl/dependencies/cluster_interconnect/rtl/low_latency_interco/ResponseBlock.sv
+      # Level 3
+      - rtl/dependencies/cluster_interconnect/rtl/low_latency_interco/XBAR_TCDM.sv
+      # Level 4
+      - rtl/dependencies/cluster_interconnect/rtl/low_latency_interco/XBAR_TCDM_WRAPPER.sv
+
+  - include_dirs:
+      - rtl/peripheral_interco
+    files:
+      # Level 0
+      - rtl/dependencies/cluster_interconnect/rtl/peripheral_interco/AddressDecoder_PE_Req.sv
+      - rtl/dependencies/cluster_interconnect/rtl/peripheral_interco/AddressDecoder_Resp_PE.sv
+      - rtl/dependencies/cluster_interconnect/rtl/peripheral_interco/FanInPrimitive_PE_Resp.sv
+      - rtl/dependencies/cluster_interconnect/rtl/peripheral_interco/FanInPrimitive_Req_PE.sv
+      - rtl/dependencies/cluster_interconnect/rtl/peripheral_interco/MUX2_REQ_PE.sv
+      - rtl/dependencies/cluster_interconnect/rtl/peripheral_interco/RR_Flag_Req_PE.sv
+      # Level 1
+      - rtl/dependencies/cluster_interconnect/rtl/peripheral_interco/ArbitrationTree_PE.sv
+      - rtl/dependencies/cluster_interconnect/rtl/peripheral_interco/ResponseTree_PE.sv
+      # Level 2
+      - rtl/dependencies/cluster_interconnect/rtl/peripheral_interco/ResponseBlock_PE.sv
+      - rtl/dependencies/cluster_interconnect/rtl/peripheral_interco/RequestBlock1CH_PE.sv
+      - rtl/dependencies/cluster_interconnect/rtl/peripheral_interco/RequestBlock2CH_PE.sv
+      # Level 3
+      - rtl/dependencies/cluster_interconnect/rtl/peripheral_interco/XBAR_PE.sv
+
+  - files:
+    # Level 0
+    - rtl/dependencies/cluster_interconnect/rtl/tcdm_interconnect/tcdm_interconnect_pkg.sv
+    - rtl/dependencies/cluster_interconnect/rtl/tcdm_interconnect/addr_dec_resp_mux.sv
+    - rtl/dependencies/cluster_interconnect/rtl/tcdm_interconnect/amo_shim.sv
+    # Level 1
+    - rtl/dependencies/cluster_interconnect/rtl/tcdm_interconnect/xbar.sv
+    # Level 2
+    - rtl/dependencies/cluster_interconnect/rtl/tcdm_interconnect/clos_net.sv
+    - rtl/dependencies/cluster_interconnect/rtl/tcdm_interconnect/bfly_net.sv
+    # Level 3
+    - rtl/dependencies/cluster_interconnect/rtl/tcdm_interconnect/tcdm_interconnect.sv
+
+  - target: tcdm_test
+    include_dirs:
+      - rtl/dependencies/cluster_interconnect/tb/common/
+      - rtl/dependencies/cluster_interconnect/tb/tb_tcdm_interconnect/hdl
+    files:
+      # Level 0
+      - rtl/dependencies/cluster_interconnect/tb/tb_tcdm_interconnect/hdl/tb_pkg.sv
+      # Level 2
+      - rtl/dependencies/cluster_interconnect/tb/tb_tcdm_interconnect/hdl/tcdm_interconnect_wrap.sv
+      # Level 2
+      - rtl/dependencies/cluster_interconnect/tb/tb_tcdm_interconnect/hdl/tb.sv
+
+# Coming from cluster_peripherals Bender
+
+  - include_dirs:
+      - rtl/dependencies/cluster_peripherals/event_unit/include
+    files:
+      # Level 0
+      - rtl/dependencies/cluster_peripherals/event_unit/event_unit/HW_barrier_logic.sv
+      - rtl/dependencies/cluster_peripherals/event_unit/event_unit/event_unit_arbiter.sv
+      - rtl/dependencies/cluster_peripherals/event_unit/event_unit/event_unit_mux.sv
+      - rtl/dependencies/cluster_peripherals/event_unit/event_unit/event_unit_sm.sv
+      - rtl/dependencies/cluster_peripherals/event_unit/event_unit/interrupt_mask.sv
+      - rtl/dependencies/cluster_peripherals/event_unit/event_unit/interfaces/bbmux_config_bus.sv
+      - rtl/dependencies/cluster_peripherals/event_unit/event_unit/interfaces/clkgate_config_bus.sv
+      # Level 1
+      - rtl/dependencies/cluster_peripherals/event_unit/event_unit/HW_barrier.sv
+      - rtl/dependencies/cluster_peripherals/event_unit/event_unit/event_unit_input.sv
+      # Level 2
+      - rtl/dependencies/cluster_peripherals/event_unit/event_unit/event_unit.sv
+
+  # Level 0
+  - rtl/dependencies/cluster_peripherals/event_unit/icache_ctrl_unit/interfaces/l0_ctrl_unit_bus.sv
+  - rtl/dependencies/cluster_peripherals/event_unit/icache_ctrl_unit/interfaces/mp_icache_ctrl_unit_bus.sv
+  - rtl/dependencies/cluster_peripherals/event_unit/icache_ctrl_unit/interfaces/mp_pf_icache_ctrl_unit_bus.sv
+  - rtl/dependencies/cluster_peripherals/event_unit/icache_ctrl_unit/interfaces/pri_icache_ctrl_unit_bus.sv
+  - rtl/dependencies/cluster_peripherals/event_unit/icache_ctrl_unit/interfaces/sp_icache_ctrl_unit_bus.sv
+  # Level 1
+  - rtl/dependencies/cluster_peripherals/event_unit/icache_ctrl_unit/icache_ctrl_unit.sv
+  - rtl/dependencies/cluster_peripherals/event_unit/icache_ctrl_unit/mp_icache_ctrl_unit.sv
+  - rtl/dependencies/cluster_peripherals/event_unit/icache_ctrl_unit/mp_pf_icache_ctrl_unit.sv
+  - rtl/dependencies/cluster_peripherals/event_unit/icache_ctrl_unit/new_icache_ctrl_unit.sv
+  - rtl/dependencies/cluster_peripherals/event_unit/icache_ctrl_unit/pri_icache_ctrl_unit.sv
+  - rtl/dependencies/cluster_peripherals/event_unit/icache_ctrl_unit/sp_icache_ctrl_unit.sv
+
+  # Level 0
+  - rtl/dependencies/cluster_peripherals/event_unit/mmu_config_unit/interfaces/mmu_config_bus.sv
+  # Level 1
+  - rtl/dependencies/cluster_peripherals/event_unit/mmu_config_unit/mmu_config_unit.sv
+
+  - rtl/dependencies/cluster_peripherals/event_unit/perf_counters_unit/perf_counters_unit.sv
+
+  - rtl/dependencies/cluster_peripherals/event_unit/tcdm_pipe_unit/tcdm_pipe_unit.sv
