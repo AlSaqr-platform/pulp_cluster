@@ -30,7 +30,7 @@ module pulp_cluster
   // cluster parameters
   parameter ASYNC_INTF    = 1,
   parameter NB_CORES      = 8,
-  parameter NB_HWPE_PORTS = 9,
+  parameter NB_HWPE_PORTS = 4,
   // number of DMA TCDM plugs, NOT number of DMA slave peripherals!
   // Everything will go to hell if you change this!
   parameter NB_DMAS       = 4,
@@ -41,11 +41,11 @@ module pulp_cluster
   parameter CLUSTER_ALIAS      = 1,
   parameter CLUSTER_ALIAS_BASE = 12'h000,
   
-  parameter TCDM_SIZE      = 64*1024, // [B], must be 2**N
+  parameter TCDM_SIZE      = 256*1024, // [B], must be 2**N
   parameter NB_TCDM_BANKS  = 16, // must be 2**N
   parameter TCDM_BANK_SIZE = TCDM_SIZE/NB_TCDM_BANKS, // [B]
   parameter TCDM_NUM_ROWS  = TCDM_BANK_SIZE/4, // [words]
-  parameter HWPE_PRESENT   = 1, // set to 1 if XNE is present in the cluster
+  parameter HWPE_PRESENT   = 0, // set to 1 if XNE is present in the cluster
   parameter USE_HETEROGENEOUS_INTERCONNECT = 1, // set to 1 to connect HWPEs via heterogeneous interconnect; to 0 for larger LIC
 
   // I$ parameters
@@ -68,7 +68,7 @@ module pulp_cluster
   parameter MULTICAST_FEATURE     = "DISABLED",
   parameter SHARED_ICACHE         = "ENABLED",
   parameter DIRECT_MAPPED_FEATURE = "DISABLED",
-  parameter L2_SIZE               = 512*1024,
+  parameter L2_SIZE               = 1024*1024,
   parameter USE_REDUCED_TAG       = "TRUE",
 
   // core parameters
@@ -85,12 +85,12 @@ module pulp_cluster
   // AXI parameters
   parameter AXI_DATA_IN_WIDTH     = 64,
   parameter AXI_DATA_OUT_WIDTH    = 64, 
-  parameter AXI_ADDR_WIDTH        = 32,
+  parameter AXI_ADDR_WIDTH        = 64,
   parameter AXI_DATA_C2S_WIDTH    = AXI_DATA_OUT_WIDTH,
   parameter AXI_DATA_S2C_WIDTH    = AXI_DATA_IN_WIDTH,
-  parameter AXI_USER_WIDTH        = 6,
-  parameter AXI_ID_IN_WIDTH       = 4,
-  parameter AXI_ID_OUT_WIDTH      = 6,
+  parameter AXI_USER_WIDTH        = 1,
+  parameter AXI_ID_IN_WIDTH       = 3,
+  parameter AXI_ID_OUT_WIDTH      = 5,
   parameter AXI_STRB_C2S_WIDTH    = AXI_DATA_C2S_WIDTH/8,
   parameter AXI_STRB_S2C_WIDTH    = AXI_DATA_S2C_WIDTH/8,
   parameter DC_SLICE_BUFFER_WIDTH = 8,
@@ -107,7 +107,7 @@ module pulp_cluster
   parameter int NB_OUTSND_BURSTS = 8,
 
   // peripheral and periph interconnect parameters
-  parameter int LOG_CLUSTER = 5, // unused
+  parameter int LOG_CLUSTER = 3, // unused
   parameter int PE_ROUTING_LSB = 10, // LSB used as routing BIT in periph interco
   // parameter int PE_ROUTING_MSB  = 13, // MSB used as routing BIT in periph interco MODIFIED
   parameter int EVNT_WIDTH = 8, // size of the event bus
@@ -2140,5 +2140,9 @@ module pulp_cluster
 //   assign s_data_master_cut.b_user   = data_master_b_user_i;
 //   assign data_master_b_ready_o      = s_data_master_cut.b_ready;
 //   end
+
+    `ifndef PRIVATE_ICACHE
+     $fatal(1,"The cluster only supports PRIVATE_ICACHE");
+    `endif
 
 endmodule

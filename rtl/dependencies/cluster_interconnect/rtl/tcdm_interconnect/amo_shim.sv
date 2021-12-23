@@ -58,11 +58,11 @@ module amo_shim_cluster #(
     logic [31:0] amo_result; // result of atomic memory operation
 
     always_comb begin
-        if (DataWidth == 64 && upper_word_q) begin
-            amo_operand_a = out_rdata_i[63:32];
-        end else begin
+//        if (DataWidth == 64 && upper_word_q) begin
+//            amo_operand_a = out_rdata_i[63:32];
+//        end else begin
             amo_operand_a = out_rdata_i[31:0];
-        end
+//        end
     end
 
     always_comb begin
@@ -125,16 +125,16 @@ module amo_shim_cluster #(
             if (load_amo) begin
                 amo_op_q        <= amo_op_t'(in_amo_i);
                 addr_q          <= in_add_i;
-                if (DataWidth == 64) begin
-                    if (!in_be_i[0]) begin
-                        amo_operand_b_q <= in_wdata_i[63:32];
-                    end
-                    upper_word_q    <= in_be_i[4];
-                    // swap value is located in the upper word
-                    swap_value_q <= in_wdata_i[63:32];
-                end else begin
+//                if (DataWidth == 64) begin
+//                    if (!in_be_i[0]) begin
+//                         amo_operand_b_q <= in_wdata_i[63:32];
+//                    end
+//                    upper_word_q    <= in_be_i[4];
+//                    // swap value is located in the upper word
+//                    swap_value_q <= in_wdata_i[63:32];
+//                end else begin
                     amo_operand_b_q <= in_wdata_i[31:0];
-                end
+//                end
                 state_q         <= DoAMO;
             end else begin
                 amo_op_q        <= AMONone;
@@ -191,7 +191,8 @@ module amo_shim_cluster #(
                         amo_result =  swap_value_q;
                     // values are not euqal -> don't update
                     end else begin
-                        amo_result =  upper_word_q ? out_rdata_i[63:32] : out_rdata_i[31:0];
+                        amo_result =  out_rdata_i[31:0];
+//                      amo_result =  upper_word_q ? out_rdata_i[63:32] : out_rdata_i[31:0];
                     end
                 `ifndef TARGET_SYNTHESIS
                 end else begin
