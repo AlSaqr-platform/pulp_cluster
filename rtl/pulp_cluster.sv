@@ -1642,10 +1642,12 @@ module pulp_cluster
     logic [$clog2(TCDM_NUM_ROWS)-1:0] addr;
     assign addr = s_tcdm_bus_sram[i].add;
 
+   `ifndef TARGET_ASIC          
     tc_sram #(
-    `ifndef TARGET_ASIC
-      .SimInit    ( "zeros"                   ), // Simulation initialization
-    `endif                                    
+    .SimInit   ( "random"            ),
+   `else
+    tc_sram_gf22 #(
+   `endif
       .NumWords   ( TCDM_NUM_ROWS             ), // specify explicitly for aegis!
       .DataWidth  ( 32                        ), // specify explicitly for aegis!
       .ByteWidth  ( 8                         ), // specify explicitly for aegis!
@@ -1850,16 +1852,6 @@ module pulp_cluster
    //       .in     (s_data_slave_cut),
    //       .out    (s_data_slave)
    //     );
-   //     // pragma translate_off
-   // `ifndef SYNTHESIS
-   // `ifndef VERILATOR
-   //     always @(posedge clk_i or posedge clk_cluster) begin
-   //       assert (clk_cluster == clk_i)
-   //         else $error("Cluster clock differs from clock input but asynchronous input inactive!");
-   //     end
-   // `endif
-   // `endif
-       // pragma translate_on
    //  end
    
       // TODO: distinguish async / sync case
