@@ -1650,7 +1650,6 @@ module pulp_cluster
    `endif
       .NumWords   ( TCDM_NUM_ROWS             ), // specify explicitly for aegis!
       .DataWidth  ( 32                        ), // specify explicitly for aegis!
-      .ByteWidth  ( 8                         ), // specify explicitly for aegis!
       .NumPorts   ( 1                         )  // specify explicitly for aegis!
     ) i_tc_sram   (
       .clk_i      ( clk_cluster               ),
