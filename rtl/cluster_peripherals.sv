@@ -59,6 +59,9 @@ module cluster_peripherals
   input  logic                        dma_pe_irq_i,
   output logic                        pf_event_o,
   
+  input  logic [NB_CORES-1:0]         dbg_req_i,
+  output logic [NB_CORES-1:0]         dbg_req_o,
+
   output logic                        soc_periph_evt_ready_o,
   input  logic                        soc_periph_evt_valid_i,
   input  logic [EVNT_WIDTH-1:0]       soc_periph_evt_data_i,
@@ -194,6 +197,8 @@ module cluster_peripherals
     .dma_events_i           ( s_dma_events           ),
     .timer_events_i         ( s_timer_events         ),
     .cluster_events_i       ( s_cluster_events       ),
+    .dbg_req_i              ( dbg_req_i              ),
+    .core_dbg_req_o         ( dbg_req_o              ),
     .core_irq_id_o          ( irq_id_o               ),
     .core_irq_ack_id_i      ( irq_ack_id_i           ),
     .core_irq_req_o         ( irq_req_o              ),

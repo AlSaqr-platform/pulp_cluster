@@ -418,6 +418,7 @@ module pulp_cluster
   `endif
 
   logic [NB_CORES-1:0]                s_dbg_irq;
+  logic [NB_CORES-1:0]                s_core_dbg_irq;
   logic [NB_CORES-1:0]                fetch_enable_reg_int;
   logic [NB_CORES-1:0]                fetch_en_int;
   logic                               s_rst_n;
@@ -1019,6 +1020,8 @@ module pulp_cluster
     .dbg_core_halt_o        ( dbg_core_halt                      ),
     .dbg_core_halted_i      ( dbg_core_halted                    ),
     .dbg_core_resume_o      ( dbg_core_resume                    ),
+    .dbg_req_i              ( s_dbg_irq                          ),
+    .dbg_req_o              ( s_core_dbg_irq                     ),
     .eoc_o                  ( eoc_o                              ),
     .cluster_cg_en_o        ( s_cluster_cg_en                    ),
     .fetch_enable_reg_o     ( fetch_enable_reg_int               ),
@@ -1105,7 +1108,7 @@ module pulp_cluster
         .instr_r_rdata_i          ( instr_r_rdata[i]          ),
         .instr_r_valid_i          ( instr_r_valid[i]          ),
         // .debug_req_i              ( 1'b0 /* TODO */           ),
-        .debug_req_i              ( s_dbg_irq[i]              ),
+        .debug_req_i              ( s_core_dbg_irq[i]         ),
         // .unaligned_o              ( core_unaligned[i]         ),
         .unaligned_o              (    /* unused */           ),
         .addrext_i                ( tryx_req[i].addrext       ),
