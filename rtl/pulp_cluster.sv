@@ -892,8 +892,7 @@ module pulp_cluster
     .axi_xresp_decerr_i ( tryx_xresp_decerr  ),
     .axi_xresp_slverr_i ( tryx_xresp_slverr  ),
     .axi_xresp_valid_i  ( tryx_xresp_valid   ),
-    // .unaligned_i        ( core_unaligned     ),
-    .unaligned_i        ( '0                 ),
+    .unaligned_i        ( core_unaligned     ),
     .periph_data_slave  ( s_core_periph_bus  ),
     .periph_data_master ( s_core_periph_tryx )
   );
@@ -1109,8 +1108,7 @@ module pulp_cluster
         .instr_r_valid_i          ( instr_r_valid[i]          ),
         // .debug_req_i              ( 1'b0 /* TODO */           ),
         .debug_req_i              ( s_core_dbg_irq[i]         ),
-        // .unaligned_o              ( core_unaligned[i]         ),
-        .unaligned_o              (    /* unused */           ),
+        .unaligned_o              ( core_unaligned[i]         ),
         .addrext_i                ( tryx_req[i].addrext       ),
         .tcdm_data_master         ( s_core_xbar_bus[i]        ),
         // .tcdm_data_master_atop    ( s_core_xbar_bus_atop[i]   ),

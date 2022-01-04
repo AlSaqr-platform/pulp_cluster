@@ -214,7 +214,7 @@ module core_region import apu_package::*;
     .data_rdata_i          ( s_core_bus.r_rdata       ),
     .data_gnt_i            ( s_core_bus.gnt           ),
     .data_rvalid_i         ( s_core_bus.r_valid       ),
-    // .data_unaligned_o      ( unaligned_o              ),
+    .data_unaligned_o      ( unaligned_o              ),
 
     .irq_i                 ( irq_req_i                ),
     .irq_id_i              ( irq_id_i                 ),
