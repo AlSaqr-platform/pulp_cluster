@@ -1225,7 +1225,7 @@ module pulp_cluster
   shared_fpu_cluster #(
     .NB_CORES         ( NB_CORES          ),
     .NB_APUS          ( 1                 ),
-    .NB_FPNEW         ( 4                 ),
+    .NB_FPNEW         ( 8                 ),
     .FP_TYPE_WIDTH    ( 3                 ),
 
     .NB_CORE_ARGS      ( 3                ),
