@@ -178,7 +178,7 @@ module core_region import apu_package::*;
 
   riscv_core #(
     .INSTR_RDATA_WIDTH   ( INSTR_RDATA_WIDTH ),
-    .N_EXT_PERF_COUNTERS ( 1                 ),
+    .N_EXT_PERF_COUNTERS ( 5                 ),
     .Zfinx               ( 1                 ),
     .PULP_SECURE         ( 0                 ),
     .FPU                 ( FPU               ),

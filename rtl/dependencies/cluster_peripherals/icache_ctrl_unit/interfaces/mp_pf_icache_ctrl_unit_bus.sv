@@ -8,7 +8,7 @@
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the
 // specific language governing permissions and limitations under the License.
 
-interface MP_PF_ICACHE_CTRL_UNIT_BUS #(
+interface DUMMY_MP_PF_ICACHE_CTRL_UNIT_BUS #(
   parameter int NB_CORES = 4
 );
 

@@ -8,7 +8,7 @@
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the
 // specific language governing permissions and limitations under the License.
 
-interface SP_ICACHE_CTRL_UNIT_BUS;
+interface DUMMY_SP_ICACHE_CTRL_UNIT_BUS;
 
   logic        ctrl_req_enable;
   logic        ctrl_ack_enable;

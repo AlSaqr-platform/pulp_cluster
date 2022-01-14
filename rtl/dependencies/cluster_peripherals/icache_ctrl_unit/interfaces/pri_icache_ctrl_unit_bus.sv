@@ -8,7 +8,7 @@
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the
 // specific language governing permissions and limitations under the License.
 
-interface PRI_ICACHE_CTRL_UNIT_BUS;
+interface DUMMY_PRI_ICACHE_CTRL_UNIT_BUS;
 
   logic        bypass_req;
   logic        bypass_ack;
