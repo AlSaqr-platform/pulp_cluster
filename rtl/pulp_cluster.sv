@@ -758,13 +758,28 @@ module pulp_cluster
     ext_tcdm_resp.r_valid = ext_tcdm_resp_buf.r_valid;
     ext_tcdm_req_buf.r_ready = ext_tcdm_req.r_ready;
   end
-  fall_through_register #(
+  // fall_through_register #(
+  //   .T  (aw_chan_t)
+  // ) i_axi2mem_aw_ft_reg (
+  //   .clk_i  (clk_cluster),
+  //   .rst_ni,
+  //   .clr_i  (1'b0),
+  //   .testmode_i (1'b0),
+  //   .valid_i  (ext_tcdm_req.aw_valid),
+  //   .ready_o  (ext_tcdm_resp.aw_ready),
+  //   .data_i   (ext_tcdm_req.aw),
+  //   .valid_o  (ext_tcdm_req_buf.aw_valid),
+  //   .ready_i  (ext_tcdm_resp_buf.aw_ready),
+  //   .data_o   (ext_tcdm_req_buf.aw)
+  // );
+
+  spill_register #(
     .T  (aw_chan_t)
   ) i_axi2mem_aw_ft_reg (
     .clk_i  (clk_cluster),
     .rst_ni,
-    .clr_i  (1'b0),
-    .testmode_i (1'b0),
+    // .clr_i  (1'b0),
+    // .testmode_i (1'b0),
     .valid_i  (ext_tcdm_req.aw_valid),
     .ready_o  (ext_tcdm_resp.aw_ready),
     .data_i   (ext_tcdm_req.aw),
