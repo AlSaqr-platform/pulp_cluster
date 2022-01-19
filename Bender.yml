@@ -58,7 +58,6 @@ sources:
   - rtl/dependencies/per2axi/src/per2axi.sv
   # Level 0
   - rtl/axi2per_wrap.sv
-  - rtl/axi_slice_wrap.sv
   - rtl/cluster_bus_wrap.sv
   - rtl/cluster_clock_gate.sv
   - rtl/cluster_event_map.sv 

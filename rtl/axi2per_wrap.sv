@@ -39,7 +39,7 @@ module axi2per_wrap
 );
    assign periph_master_atop_o = '0;
    
-  axi2per_cluster         #( // MODIFIED
+  axi2per_cluster         #( 
     .PER_ADDR_WIDTH        ( PER_ADDR_WIDTH        ),
     .PER_ID_WIDTH          ( PER_ID_WIDTH          ),
     .AXI_ADDR_WIDTH        ( AXI_ADDR_WIDTH        ),

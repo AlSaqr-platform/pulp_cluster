@@ -3,7 +3,6 @@ package:
 
 dependencies:
   cluster_interconnect: { path: "../cluster_interconnect" } # for interfaces # TODO: switch to version once it's released
-  # cluster_interconnect:   { git: "https://github.com/pulp-platform/cluster_interconnect.git", version: 1.1.1 }
 
 sources:
   - cluster_control_unit/cluster_control_unit.sv

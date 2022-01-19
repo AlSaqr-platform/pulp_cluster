@@ -10,7 +10,7 @@
 
 // Davide Rossi <davide.rossi@unibo.it>
 
-module axi2per_cluster // MODIFIED
+module axi2per_cluster
 #(
    parameter PER_ADDR_WIDTH = 32,
    parameter PER_ID_WIDTH   = 5,

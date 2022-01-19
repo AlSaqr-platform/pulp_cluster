@@ -10,7 +10,7 @@
 
 // Andreas Kurth <akurth@iis.ee.ethz.ch>
 
-module axi2mem_cluster #( // MODIFIED
+module axi2mem_cluster #(
   parameter type axi_req_t = logic,     // AXI request type
   parameter type axi_resp_t = logic,    // AXI response type
   parameter int unsigned AddrWidth = 0, // address width
@@ -507,7 +507,7 @@ module axi2mem_wrap #(
   resp_t  resp;
   `AXI_ASSIGN_TO_REQ    (req, slv);
   `AXI_ASSIGN_FROM_RESP (slv, resp);
-  axi2mem_cluster #( // MODIFIED
+  axi2mem_cluster #(
     .axi_req_t  (req_t),
     .axi_resp_t (resp_t),
     .AddrWidth  (AddrWidth),
