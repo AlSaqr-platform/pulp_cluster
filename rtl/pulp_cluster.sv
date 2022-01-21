@@ -600,34 +600,23 @@ module pulp_cluster
   axi_resp_t  ext_tcdm_resp,  ext_tcdm_resp_buf;
   `AXI_ASSIGN_TO_REQ(ext_tcdm_req, s_ext_tcdm_bus);
   `AXI_ASSIGN_FROM_RESP(s_ext_tcdm_bus, ext_tcdm_resp);
-  always_comb begin
-    `AXI_SET_W_STRUCT(ext_tcdm_req_buf.w, ext_tcdm_req.w);
-    ext_tcdm_req_buf.w_valid = ext_tcdm_req.w_valid;
-    ext_tcdm_resp.w_ready = ext_tcdm_resp_buf.w_ready;
-    `AXI_SET_AR_STRUCT(ext_tcdm_req_buf.ar, ext_tcdm_req.ar);
-    ext_tcdm_req_buf.ar_valid = ext_tcdm_req.ar_valid;
-    ext_tcdm_resp.ar_ready = ext_tcdm_resp_buf.ar_ready;
-    `AXI_SET_B_STRUCT(ext_tcdm_resp.b, ext_tcdm_resp_buf.b);
-    ext_tcdm_resp.b_valid = ext_tcdm_resp_buf.b_valid;
-    ext_tcdm_req_buf.b_ready = ext_tcdm_req.b_ready;
-    `AXI_SET_R_STRUCT(ext_tcdm_resp.r, ext_tcdm_resp_buf.r);
-    ext_tcdm_resp.r_valid = ext_tcdm_resp_buf.r_valid;
-    ext_tcdm_req_buf.r_ready = ext_tcdm_req.r_ready;
-  end
 
-  spill_register #(
-    .T  (aw_chan_t)
-  ) i_axi2mem_aw_ft_reg (
-    .clk_i  (clk_cluster),
+  axi_cut #(
+    .Bypass     (1'b0),
+    .aw_chan_t  (aw_chan_t),
+    .w_chan_t   (w_chan_t),
+    .b_chan_t   (b_chan_t),
+    .ar_chan_t  (ar_chan_t),
+    .r_chan_t   (r_chan_t),
+    .req_t      (axi_req_t),
+    .resp_t     (axi_resp_t)
+  ) i_axi_to_mem_cut (
+    .clk_i      (clk_cluster),
     .rst_ni,
-    // .clr_i  (1'b0),
-    // .testmode_i (1'b0),
-    .valid_i  (ext_tcdm_req.aw_valid),
-    .ready_o  (ext_tcdm_resp.aw_ready),
-    .data_i   (ext_tcdm_req.aw),
-    .valid_o  (ext_tcdm_req_buf.aw_valid),
-    .ready_i  (ext_tcdm_resp_buf.aw_ready),
-    .data_o   (ext_tcdm_req_buf.aw)
+    .slv_req_i  (ext_tcdm_req),
+    .slv_resp_o (ext_tcdm_resp),
+    .mst_req_o  (ext_tcdm_req_buf),
+    .mst_resp_i (ext_tcdm_resp_buf)
   );
 
   axi2mem_cluster #(
