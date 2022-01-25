@@ -11,11 +11,11 @@ dependencies:
   hier-icache: { git: "https://github.com/pulp-platform/hier-icache.git", rev: "1e94c16b8f3082af40cc7e579027dc485202c1d6" }
   icache_private: { git: "https://github.com/AlSaqr-platform/icache_private.git", rev: "84436443d3a2dbad0b94a85c2c5cc8915632fd26" }
   cluster_peripherals: { path: "rtl/dependencies/cluster_peripherals" }
-  fpu_interco: { git: "https://github.com/AlSaqr-platform/fpu_interco", rev: "743b58f5ee7fd1f3633c9eb5067b29e7198ad3c3" }
+  fpu_interco: { git: "https://github.com/AlSaqr-platform/fpu_interco", rev: "5263abb5872d919bf3bde6bf52e8fdaffe2f9021" }
   axi: { git: "https://github.com/pulp-platform/axi.git", version: 0.29.1 }
   common_cells: { git: "https://github.com/pulp-platform/common_cells.git", version: 1.13.1 }
   tech_cells_generic: { git: "https://github.com/pulp-platform/tech_cells_generic.git", version: 0.2.4 }
-  riscv: { git: "git@iis-git.ee.ethz.ch:darkside/riscv.git", rev: "238288ca3ed1e9630f2b76d8a65aab623731a1b5"}
+  riscv: { git: "git@github.com:AlSaqr-platform/riscv_nn.git", rev: "ee8a4a972e29f9a573fa215ffb591bdcced37996"}
   timer_unit: { git: "https://github.com/pulp-platform/timer_unit.git", version: 1.0.0 }
   scm: { git: "https://github.com/pulp-platform/scm.git", version: 1.0.1}
 
