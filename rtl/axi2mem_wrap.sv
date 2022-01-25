@@ -16,7 +16,7 @@
  * Francesco Conti <fconti@iis.ee.ethz.ch>
  */
 
-module axi2mem_wrap
+module cl_axi2mem_wrap
 #(
   parameter NB_DMAS        = 4,
   parameter AXI_ADDR_WIDTH = 32,
@@ -58,7 +58,7 @@ module axi2mem_wrap
     end
   endgenerate
 
-  axi2mem #(
+  axi2tcdm #(
     .AXI_ADDR_WIDTH       ( AXI_ADDR_WIDTH        ),
     .AXI_DATA_WIDTH       ( AXI_DATA_WIDTH        ),
     .AXI_USER_WIDTH       ( AXI_USER_WIDTH        ),

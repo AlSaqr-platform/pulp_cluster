@@ -1,0 +1,12 @@
+package:
+  name: per2axi
+
+dependencies:
+  axi: { git: "https://github.com/pulp-platform/axi.git", version: 0.29.1 }
+  common_cells: { git: "https://github.com/pulp-platform/common_cells.git", version: 1.21.0 }  
+
+sources:
+  - src/per2axi_busy_unit.sv
+  - src/per2axi_req_channel.sv
+  - src/per2axi_res_channel.sv
+  - src/per2axi.sv

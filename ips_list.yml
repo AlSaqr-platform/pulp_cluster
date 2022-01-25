@@ -2,83 +2,39 @@
 # List of IPs and relative branch/commit-hash/tag.
 # Uses the YAML syntax.
 #
-common_cells:
-  commit: v1.21.0
-  domain: [cluster, soc]
-axi/axi:
-  commit: v0.28.0
-  domain: [cluster, soc]
-axi/axi_slice:
-  commit: v1.1.4
-  domain: [cluster, soc]
-axi/axi_slice_dc:
-  commit: v1.1.3
-  domain: [cluster, soc]
+
 axi/axi2mem:
-  commit: 6973e0434d26ba578cdb4aa69c26c1facd1a3f15
-  domain: [soc, cluster]
-  group:  pulp-platform
+  commit: atomics
+  server: git@iis-git.ee.ethz.ch
+  group: sriedel
 axi/axi2per:
-  commit: tags/v1.0.1
-  domain: [cluster]
-  group:  pulp-platform
+  commit: atomics
+  server: git@iis-git.ee.ethz.ch
+  group: sriedel
 axi/per2axi:
-  commit: v1.0.4
-  domain: [soc, cluster]
-  group:  pulp-platform
-axi/axi_size_conv:
-  commit: 5239f87fe772111ec368fb08dbb971516edce097
-  domain: [cluster]
-  group:  pulp-platform
+  commit: 50de2b6de679e8431b4d4424e6dd05863fd9727e
+  server: git@iis-git.ee.ethz.ch
+  group:  akurth
 cluster_interconnect:
-  commit: v1.1.1
-  domain: [cluster]
-  group:  pulp-platform
+  commit: atomics-v0.1.0
+  server: git@iis-git.ee.ethz.ch
+  group:  akurth
 event_unit_flex:
-  commit: 1.4.1
-  domain: [cluster]
-  group:  pulp-platform
-mchan:
-  commit: clusterv2
-  domain: [cluster]
-  group:  pulp-platform
-hier-icache:
-  commit: axi_node_dep
-  domain: [cluster]
-  group:  pulp-platform
+  commit: tags/pulp-v1.0
+  group: pulp-platform
 icache-intc:
-  commit: tags/v1.0.1
-  domain: [cluster]
-  group:  pulp-platform
+  commit: tags/pulp-v1.0
+  group: pulp-platform
 icache_mp_128_pf:
-  commit: 6f2e54102001230db9c82432bf9e011842419a48
-  domain: [cluster]
-  group:  pulp-platform
-icache_private:
-  commit: 1d4cdbcbec3ab454c09d378fc55631b60450fccd
-  domain: [cluster]
-  group:  pulp-platform
-hwpe-ctrl:
-  commit: v1.6.1
+  commit: tags/pulp-v1.0
   group: pulp-platform
-  domain: [soc, cluster, pulp]
-hwpe-stream:
-  commit: v1.6.3
-  group: pulp-platform
-  domain: [soc, cluster, pulp]
-hci:
-  commit: new_xbar
-  group: pulp-platform
-  domain: [soc, cluster, pulp]
 cluster_peripherals:
-  commit: v2.1.0
-  domain: [cluster]
+  commit: remove-axi
+  server: git@iis-git.ee.ethz.ch
+  group: sriedel
+scm:
+  commit: tags/pulpissimo-v1.0
+  group: pulp-platform
+timer_unit:
+  commit: tags/pulpissimo-v1.0
   group:  pulp-platform
-fpu_interco:
-  commit: be7808b84a1dcdb1ecdb6e40814cc4864acd9451
-  domain: [soc, cluster]
-  group: pulp-platform
-hwpe-datamover-example:
-  commit: v1.0
-  group: pulp-platform
-  domain: [cluster, pulp]

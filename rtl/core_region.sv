@@ -17,29 +17,26 @@
  */
 
 `include "pulp_soc_defines.sv"
-`include "periph_bus_defines.sv"
-
 
 // USER DEFINED MACROS to improve self-testing capabilities
 `ifndef PULP_FPGA_SIM
+`ifndef SYNTHESIS
   `define DEBUG_FETCH_INTERFACE
+`endif
 `endif
 //`define DATA_MISS
 //`define DUMP_INSTR_FETCH
 
-module core_region
+module core_region import apu_package::*;
 #(
   // CORE PARAMETERS
-  parameter CORE_TYPE_CL        = 0,  // 0 for RISCY, 1 for IBEX RV32IMC (formerly ZERORISCY), 2 for IBEX RV32EC (formerly MICRORISCY)
-  // parameter USE_FPU             = 1,
-  // parameter USE_HWPE            = 1,
-  parameter N_EXT_PERF_COUNTERS = 1,
-  parameter CORE_ID             = 0,
-  parameter ADDR_WIDTH          = 32,
-  parameter DATA_WIDTH          = 32,
-  parameter INSTR_RDATA_WIDTH   = 32,
-  parameter CLUSTER_ALIAS_BASE  = 12'h000,
-  parameter REMAP_ADDRESS       = 0,
+  parameter CORE_ID = 0,
+  parameter ADDR_WIDTH = 32,
+  parameter DATA_WIDTH = 32,
+  parameter INSTR_RDATA_WIDTH = 32,
+  parameter CLUSTER_ALIAS = 1'b1,
+  parameter CLUSTER_ALIAS_BASE = 12'h000,
+  parameter REMAP_ADDRESS = 0,
 
   parameter APU_NARGS_CPU       = 2,
   parameter APU_WOP_CPU         = 1,
@@ -52,56 +49,61 @@ module core_region
   parameter SHARED_FP           =  0,
   parameter SHARED_FP_DIVSQRT   =  0,
 
-  parameter DEBUG_START_ADDR    = `DEBUG_START_ADDR,
-
-  parameter L2_SLM_FILE         = "./slm_files/l2_stim.slm",
-  parameter ROM_SLM_FILE        = "../sw/apps/boot/slm_files/l2_stim.slm"
+  parameter DEBUG_HALT_ADDR = 32'h0000_0000,
+  parameter ADDREXT = 1'b0,
+  
+  parameter DEM_PER_BEFORE_TCDM_TS = 1'b0,
+ 
+  parameter L2_SLM_FILE = "./slm_files/l2_stim.slm",
+  parameter ROM_SLM_FILE = "../sw/apps/boot/slm_files/l2_stim.slm"
 )
 (
-  input logic                            clk_i,
-  input logic                            rst_ni,
-  input logic                            init_ni,
+  input logic 			      clk_i,
+  input logic 			      rst_ni,
+  input logic 			      init_ni,
 
-  input logic [3:0]                      base_addr_i, // FOR CLUSTER VIRTUALIZATION
+  input logic [3:0] 		      base_addr_i, // FOR CLUSTER VIRTUALIZATION
 
-  input logic [5:0]                      cluster_id_i,
+  input logic [5:0] 		      cluster_id_i,
   
-  input logic                            irq_req_i,
-  output logic                           irq_ack_o,
-  input logic [4:0]                      irq_id_i,
-  output logic [4:0]                     irq_ack_id_o,
+  input logic 			      irq_req_i,
+  output logic 			      irq_ack_o,
+  input logic [4:0] 		      irq_id_i,
+  output logic [4:0] 		      irq_ack_id_o,
   
-  input logic                            clock_en_i,
-  input logic                            fetch_en_i,
-  input logic                            fregfile_disable_i,
+  input logic 			      clock_en_i,
+  input logic 			      fetch_en_i,
+  input logic 			      fregfile_disable_i,
 
-  input logic [31:0]                     boot_addr_i,
+  input logic [31:0] 		      boot_addr_i,
 
-  input logic                            test_mode_i,
+  input logic 			      test_mode_i,
 
-  output logic                           core_busy_o,
+  output logic 			      core_busy_o,
 
   // Interface to Instruction Logarithmic interconnect (Req->grant handshake)
-  output logic                           instr_req_o,
-  input logic                            instr_gnt_i,
-  output logic [31:0]                    instr_addr_o,
-  input logic [INSTR_RDATA_WIDTH-1:0]    instr_r_rdata_i,
-  input logic                            instr_r_valid_i,
+  output logic 			      instr_req_o,
+  input logic 			      instr_gnt_i,
+  output logic [31:0] 		      instr_addr_o,
+  input logic [INSTR_RDATA_WIDTH-1:0] instr_r_rdata_i,
+  input logic 			      instr_r_valid_i,
 
-  input logic                            debug_req_i,
-              
-  //XBAR_TCDM_BUS.Slave     debug_bus,
-  //output logic            debug_core_halted_o,
-  //input logic             debug_core_halt_i,
-  //input logic             debug_core_resume_i,
-              
-  // Interface for DEMUX to TCDM INTERCONNECT ,PERIPHERAL INTERCONNECT and DMA CONTROLLER
-  hci_core_intf.master tcdm_data_master,
-  XBAR_TCDM_BUS.Master dma_ctrl_master,
-  XBAR_PERIPH_BUS.Master eu_ctrl_master,
-  XBAR_PERIPH_BUS.Master periph_data_master
+  input logic             debug_req_i,
 
- // new interface signals
+  output logic                  unaligned_o,
+  input logic [31:0]            addrext_i,
+				      
+				      // Interface for DEMUX to TCDM INTERCONNECT ,PERIPHERAL INTERCONNECT and DMA CONTROLLER
+				      XBAR_TCDM_BUS.Master   tcdm_data_master,
+				      output logic [5:0]     tcdm_data_master_atop,
+				      XBAR_TCDM_BUS.Master   dma_ctrl_master,
+				      XBAR_PERIPH_BUS.Master eu_ctrl_master,
+				      XBAR_TCDM_BUS.Master   tlb_miss_ctrl_master,
+				      XBAR_PERIPH_BUS.Master periph_data_master,
+				      output logic [5:0]     periph_data_master_atop				      
+				      // APU interconnect interface
+				      // cpu_marx_if.cpu apu_master
+  // new interface signals
  `ifdef SHARED_FPU_CLUSTER
  // TODO: Ensure disable if CORE_TYPE_CL != 0
   ,
@@ -135,29 +137,13 @@ module core_region
   input logic [31:0]                     apu_master_result_i,
   input logic [APU_NUSFLAGS_CPU-1:0]     apu_master_flags_i
 `endif
- 
-
 );
 
-  //********************************************************
-  //***************** SIGNALS DECLARATION ******************
-  //********************************************************
-
-  XBAR_DEMUX_BUS    s_core_bus();         // Internal interface between CORE       <--> DEMUX
-  XBAR_PERIPH_BUS   periph_demux_bus();   // Internal interface between CORE_DEMUX <--> PERIPHERAL DEMUX
+  XBAR_CLUSTER_DEMUX_BUS s_core_bus();         // Internal interface between CORE       <--> DEMUX
+  XBAR_PERIPH_BUS        periph_demux_bus();   // Internal interface between CORE_DEMUX <--> PERIPHERAL DEMUX
 
   logic [4:0]      perf_counters;
   logic            clk_int;
-  logic [31:0]     hart_id;
-  logic            core_sleep;
-  logic [31:0]     boot_addr;
-  logic [31:0]     core_irq_x;
-
-  logic            core_instr_req;
-  logic            core_instr_gnt;
-  logic [31:0]     core_instr_addr;
-  logic [31:0]     core_instr_r_rdata;
-  logic            core_instr_r_valid;
 
   // clock gate of the core_region less the core itself
   cluster_clock_gating clock_gate_i (
@@ -167,213 +153,113 @@ module core_region
     .clk_o     ( clk_int     )
   );
 
-  assign hart_id = {21'b0, cluster_id_i[5:0], 1'b0, CORE_ID[3:0]};
+  `ifndef APU_CLUSTER
+   `ifndef SHARED_FPU_CLUSTER
+    // TODO: Disable if CORE_TYPE_CL != 0
+    logic                     apu_master_req_o;
+    logic                     apu_master_gnt_i;
+    // request channel
+    logic [WAPUTYPE-1:0]             apu_master_type_o;
+    logic [APU_NARGS_CPU-1:0][31:0]  apu_master_operands_o;
+    logic [APU_WOP_CPU-1:0]          apu_master_op_o;
+    logic [APU_NDSFLAGS_CPU-1:0]     apu_master_flags_o;
+    // response channel
+    logic                        apu_master_ready_o;
+    logic                        apu_master_valid_i;
+    logic [31:0]                 apu_master_result_i;
+    logic [APU_NUSFLAGS_CPU-1:0] apu_master_flags_i;
+  
+    assign apu_master_gnt_i      = '1;
+    assign apu_master_valid_i    = '0;
+    assign apu_master_result_i   = '0;
+    assign apu_master_flags_i    = '0;
+   `endif
+  `endif
 
-`ifndef APU_CLUSTER
- `ifndef SHARED_FPU_CLUSTER
-  // TODO: Disable if CORE_TYPE_CL != 0
-  logic                     apu_master_req_o;
-  logic                     apu_master_gnt_i;
-  // request channel
-  logic [WAPUTYPE-1:0]             apu_master_type_o;
-  logic [APU_NARGS_CPU-1:0][31:0]  apu_master_operands_o;
-  logic [APU_WOP_CPU-1:0]          apu_master_op_o;
-  logic [APU_NDSFLAGS_CPU-1:0]     apu_master_flags_o;
-  // response channel
-  logic                        apu_master_ready_o;
-  logic                        apu_master_valid_i;
-  logic [31:0]                 apu_master_result_i;
-  logic [APU_NUSFLAGS_CPU-1:0] apu_master_flags_i;
+  riscv_core #(
+    .INSTR_RDATA_WIDTH   ( INSTR_RDATA_WIDTH ),
+    .N_EXT_PERF_COUNTERS ( 5                 ),
+    .Zfinx               ( 1                 ),
+    .PULP_SECURE         ( 0                 ),
+    .FPU                 ( FPU               ),
+    .FP_DIVSQRT          ( FP_DIVSQRT        ),
+    .SHARED_FP           ( SHARED_FP         ),
+    .SHARED_DSP_MULT     ( 0                 ),
+    .SHARED_INT_DIV      ( 0                 ),
+    .SHARED_FP_DIVSQRT   ( SHARED_FP_DIVSQRT ),
+    .WAPUTYPE            ( WAPUTYPE          ),
+    .DM_HaltAddress      ( DEBUG_HALT_ADDR   )
+  ) RISCV_CORE (
+    .clk_i                 ( clk_i                    ),
+    .rst_ni                ( rst_ni                   ),
 
-  assign apu_master_gnt_i      = '1;
-  assign apu_master_valid_i    = '0;
-  assign apu_master_result_i   = '0;
-  assign apu_master_flags_i    = '0;
- `endif
-`endif
+    .clock_en_i            ( clock_en_i               ),
+    .test_en_i             ( test_mode_i              ),
 
-   //********************************************************
-   //***************** PROCESSOR ****************************
-   //********************************************************
+    .boot_addr_i           ( boot_addr_i              ),
+    .core_id_i             ( CORE_ID[3:0]             ),
+    .cluster_id_i          ( cluster_id_i             ),
 
-  generate
-    if ( CORE_TYPE_CL == 0 ) begin: CL_CORE
-      assign boot_addr = boot_addr_i;
-      riscv_core #(
-        .INSTR_RDATA_WIDTH   ( INSTR_RDATA_WIDTH ),
-        .N_EXT_PERF_COUNTERS ( 5                 ),
-        .PULP_SECURE         ( 0                 ),
-        .FPU                 ( FPU               ),
-        .FP_DIVSQRT          ( FP_DIVSQRT        ),
-        .SHARED_FP           ( SHARED_FP         ),
-        .SHARED_DSP_MULT     ( 0                 ),
-        .SHARED_INT_DIV      ( 0                 ),
-        .SHARED_FP_DIVSQRT   ( SHARED_FP_DIVSQRT ),
-        .WAPUTYPE            ( WAPUTYPE          ),
-        .DM_HaltAddress      ( DEBUG_START_ADDR + 16'h0800 )
+    .instr_addr_o          ( instr_addr_o             ),
+    .instr_req_o           ( instr_req_o              ),
+    .instr_rdata_i         ( instr_r_rdata_i          ),
+    .instr_gnt_i           ( instr_gnt_i              ),
+    .instr_rvalid_i        ( instr_r_valid_i          ),
 
-      ) RISCV_CORE (
-        .clk_i                 ( clk_i             ),
-        .rst_ni                ( rst_ni            ),
+    .data_addr_o           ( s_core_bus.add           ),
+    .data_wdata_o          ( s_core_bus.wdata         ),
+    .data_we_o             ( s_core_bus.we            ),
+    // .data_atop_o           ( s_core_bus.atop          ),
+    .data_req_o            ( s_core_bus.req           ),
+    .data_be_o             ( s_core_bus.be            ),
+    .data_rdata_i          ( s_core_bus.r_rdata       ),
+    .data_gnt_i            ( s_core_bus.gnt           ),
+    .data_rvalid_i         ( s_core_bus.r_valid       ),
+    .data_unaligned_o      ( unaligned_o              ),
 
-        .clock_en_i            ( clock_en_i        ),
-        .test_en_i             ( test_mode_i       ),
+    .irq_i                 ( irq_req_i                ),
+    .irq_id_i              ( irq_id_i                 ),
+    .irq_id_o              ( irq_ack_id_o             ),
+    .irq_ack_o             ( irq_ack_o                ),
 
-        .boot_addr_i           ( boot_addr         ),
-        .core_id_i             ( CORE_ID[3:0]      ),
-        .cluster_id_i          ( cluster_id_i      ),
+    .sec_lvl_o             (                          ),
+    .irq_sec_i             (      1'b0                ),
 
-        .instr_addr_o          ( instr_addr_o             ),
-        .instr_req_o           ( instr_req_o              ),
-        .instr_rdata_i         ( instr_r_rdata_i          ),
-        .instr_gnt_i           ( instr_gnt_i              ),
-        .instr_rvalid_i        ( instr_r_valid_i          ),
+    .debug_req_i           ( debug_req_i              ),
 
-        .data_addr_o           ( s_core_bus.add           ),
-        .data_wdata_o          ( s_core_bus.wdata         ),
-        .data_we_o             ( s_core_bus.we            ),
-        .data_req_o            ( s_core_bus.req           ),
-        .data_be_o             ( s_core_bus.be            ),
-        .data_rdata_i          ( s_core_bus.r_rdata       ),
-        .data_gnt_i            ( s_core_bus.gnt           ),
-        .data_rvalid_i         ( s_core_bus.r_valid       ),
+    .fetch_enable_i        ( fetch_en_i               ),
+    .core_busy_o           ( core_busy_o              ),
+    // // apu-interconnect
+    // // handshake signals
+    // .apu_master_req_o      ( apu_master.req_ds_s      ),
+    // .apu_master_ready_o    ( apu_master.ready_us_s    ),
+    // .apu_master_gnt_i      ( apu_master.ack_ds_s      ),
+    //  // request channel
+    // .apu_master_operands_o ( apu_master.operands_ds_d ),
+    // .apu_master_op_o       ( apu_master.op_ds_d       ),
+    // .apu_master_type_o     ( apu_master.type_ds_d     ),
+    // .apu_master_flags_o    ( apu_master.flags_ds_d    ),
+    // // response channel
+    // .apu_master_valid_i    ( apu_master.valid_us_s    ),
+    // .apu_master_result_i   ( apu_master.result_us_d   ),
+    // .apu_master_flags_i    ( apu_master.flags_us_d    ),
 
-        .irq_i                 ( irq_req_i                ),
-        .irq_id_i              ( irq_id_i                 ),
-        .irq_id_o              ( irq_ack_id_o             ),
-        .irq_ack_o             ( irq_ack_o                ),
+    // apu-interconnect
+    .apu_master_req_o      ( apu_master_req_o      ),
+    .apu_master_gnt_i      ( apu_master_gnt_i      ),
+    .apu_master_type_o     ( apu_master_type_o     ),
+    .apu_master_operands_o ( apu_master_operands_o ),
+    .apu_master_op_o       ( apu_master_op_o       ),
+    .apu_master_flags_o    ( apu_master_flags_o    ),
 
-        .sec_lvl_o             (                          ),
-        .irq_sec_i             (      1'b0                ),
+    .apu_master_valid_i    ( apu_master_valid_i    ),
+    .apu_master_ready_o    ( apu_master_ready_o    ),
+    .apu_master_result_i   ( apu_master_result_i   ),
+    .apu_master_flags_i    ( apu_master_flags_i    ),
 
-        .debug_req_i           ( debug_req_i              ),
-
-        .fetch_enable_i        ( fetch_en_i               ),
-        .core_busy_o           ( core_busy_o              ),
-
-
-         // apu-interconnect
-        .apu_master_req_o      ( apu_master_req_o      ),
-        .apu_master_gnt_i      ( apu_master_gnt_i      ),
-        .apu_master_type_o     ( apu_master_type_o     ),
-        .apu_master_operands_o ( apu_master_operands_o ),
-        .apu_master_op_o       ( apu_master_op_o       ),
-        .apu_master_flags_o    ( apu_master_flags_o    ),
-
-        .apu_master_valid_i    ( apu_master_valid_i    ),
-        .apu_master_ready_o    ( apu_master_ready_o    ),
-        .apu_master_result_i   ( apu_master_result_i   ),
-        .apu_master_flags_i    ( apu_master_flags_i    ),
-
-        .ext_perf_counters_i   ( perf_counters         ),
-        .fregfile_disable_i    ( 1'b1                  )   //disable FP regfile
-      ); 
-    end else begin: CL_CORE
-      assign boot_addr = boot_addr_i & 32'hFFFFFF00; // RI5CY expects 0x80 offset, Ibex expects 0x00 offset (adds reset offset 0x80 internally)
-      
-      if (INSTR_RDATA_WIDTH == 128) begin
-        instr_width_converter ibex_width_converter (
-          .clk_i            ( clk_i              ),
-          .rst_ni           ( rst_ni             ),
-
-          .cache_req_o      ( instr_req_o        ),
-          .cache_gnt_i      ( instr_gnt_i        ),
-          .cache_addr_o     ( instr_addr_o       ),
-          .cache_r_rdata_i  ( instr_r_rdata_i    ),
-          .cache_r_valid_i  ( instr_r_valid_i    ),
-
-          .core_req_i       ( core_instr_req     ),
-          .core_gnt_o       ( core_instr_gnt     ),
-          .core_addr_i      ( core_instr_addr    ),
-          .core_r_rdata_o   ( core_instr_r_rdata ),
-          .core_r_valid_o   ( core_instr_r_valid )
-        );
-      end else begin
-        assign instr_req_o        = core_instr_req;
-        assign core_instr_gnt     = instr_gnt_i;
-        assign instr_addr_o       = core_instr_addr;
-        assign core_instr_r_rdata = instr_r_rdata_i;
-        assign core_instr_r_valid = instr_r_valid_i;
-      end
-      
-`ifdef VERILATOR
-      ibex_core #(
-`elsif TRACE_EXECUTION
-      ibex_core_tracing #(
-`else
-      ibex_core #(
-`endif
-        .PMPEnable                ( 1'b0              ),
-        .MHPMCounterNum           ( 10                ),
-        .MHPMCounterWidth         ( 40                ),
-        .RV32E                    ( CORE_TYPE_CL == 2 ),
-        .RV32M                    ( CORE_TYPE_CL == 1 ),
-        .RV32B                    ( 1'b0              ),
-        .BranchTargetALU          ( 1'b0              ),
-        .WritebackStage           ( 1'b0              ),
-        .MultiplierImplementation ( "fast"            ),
-        .ICache                   ( 1'b0              ),
-        .DbgTriggerEn             ( 1'b1              ),
-        .SecureIbex               ( 1'b0              ),
-        .DmHaltAddr               ( 32'h1A110800      ),
-        .DmExceptionAddr          ( 32'h1A110808      )
-      ) IBEX_CORE (
-        .clk_i                 ( clk_i              ),
-        .rst_ni                ( rst_ni             ),
-
-        .test_en_i             ( test_mode_i        ),
-
-        .hart_id_i             ( hart_id            ),
-        .boot_addr_i           ( boot_addr          ),
-
-        // Instruction Memory Interface:  Interface to Instruction Logaritmic interconnect: Req->grant handshake
-        .instr_addr_o          ( core_instr_addr    ),
-        .instr_req_o           ( core_instr_req     ),
-        .instr_rdata_i         ( core_instr_r_rdata ),
-        .instr_gnt_i           ( core_instr_gnt     ),
-        .instr_rvalid_i        ( core_instr_r_valid ),
-        .instr_err_i           ( 1'b0               ),
-
-        // Data memory interface:
-        .data_addr_o           ( s_core_bus.add     ),
-        .data_req_o            ( s_core_bus.req     ),
-        .data_be_o             ( s_core_bus.be      ),
-        .data_rdata_i          ( s_core_bus.r_rdata ),
-        .data_we_o             ( s_core_bus.we      ),
-        .data_gnt_i            ( s_core_bus.gnt     ),
-        .data_wdata_o          ( s_core_bus.wdata   ),
-        .data_rvalid_i         ( s_core_bus.r_valid ),
-        .data_err_i            ( 1'b0               ),
-
-        .irq_software_i        ( 1'b0               ),
-        .irq_timer_i           ( 1'b0               ),
-        .irq_external_i        ( 1'b0               ),
-        .irq_fast_i            ( 15'b0              ),
-        .irq_nm_i              ( 1'b0               ),
-
-        .irq_x_i               ( core_irq_x         ),
-        .irq_x_ack_o           ( irq_ack_o          ),
-        .irq_x_ack_id_o        ( irq_ack_id_o       ),
-
-        .debug_req_i           ( debug_req_i        ),
-
-        .fetch_enable_i        ( fetch_en_i         ),
-        .core_sleep_o          ( core_sleep         )
-      );
-      assign core_busy_o = ~core_sleep;
-
-      // Ibex supports 32 additional fast interrupts and reads the interrupt lines directly.
-      // Convert ID back to interrupt lines
-      always_comb begin : gen_core_irq_x
-        core_irq_x = '0;
-        if (irq_req_i) begin
-            core_irq_x[irq_id_i] = 1'b1;
-        end
-      end
-    end
-  endgenerate
-
-  //assign debug_bus.r_opc = 1'b0;
+    .ext_perf_counters_i   ( perf_counters            ),
+    .fregfile_disable_i    ( fregfile_disable_i       )
+  );
 
   // Bind to 0 Unused Signals in CORE interface
   assign s_core_bus.r_gnt       = 1'b0;
@@ -384,30 +270,31 @@ module core_region
   // Performance Counters
   assign perf_counters[4] = tcdm_data_master.req & (~tcdm_data_master.gnt);  // Cycles lost due to contention
 
-
-  //********************************************************
-  //****** DEMUX TO TCDM AND PERIPHERAL INTERCONNECT *******
-  //********************************************************
-   
   // demuxes to TCDM & memory hierarchy
   core_demux #(
-    .ADDR_WIDTH         ( 32                 ),
-    .DATA_WIDTH         ( 32                 ),
-    .BYTE_ENABLE_BIT    ( DATA_WIDTH/8       ),
-    .CLUSTER_ALIAS_BASE ( CLUSTER_ALIAS_BASE )
+    .ADDR_WIDTH             ( 32                      ),
+    .DATA_WIDTH             ( 32                      ),
+    .BYTE_ENABLE_BIT        ( DATA_WIDTH/8            ),
+    .CLUSTER_ALIAS          ( CLUSTER_ALIAS           ),
+    .CLUSTER_ALIAS_BASE     ( CLUSTER_ALIAS_BASE      ),
+    .DEM_PER_BEFORE_TCDM_TS ( DEM_PER_BEFORE_TCDM_TS  ),
+    .ADDREXT                ( ADDREXT                 ),
+    .REMAP_ADDRESS          ( REMAP_ADDRESS           )
   ) core_demux_i (
     .clk                (  clk_int                    ),
     .rst_ni             (  rst_ni                     ),
     .test_en_i          (  test_mode_i                ),
-  `ifdef REMAP_ADDRESS
     .base_addr_i        (  base_addr_i                ),
-`endif
+
     .data_req_i         (  s_core_bus.req             ),
     .data_add_i         (  s_core_bus.add             ),
     .data_wen_i         ( ~s_core_bus.we              ), //inverted when using OR10N
+    // .data_atop_i        (  s_core_bus.atop            ),
+    .data_atop_i        (  '0                         ),
     .data_wdata_i       (  s_core_bus.wdata           ),
     .data_be_i          (  s_core_bus.be              ),
     .data_gnt_o         (  s_core_bus.gnt             ),
+    .addrext_i,
     .data_r_gnt_i       (  s_core_bus.r_gnt           ),
     .data_r_valid_o     (  s_core_bus.r_valid         ),
     .data_r_opc_o       (                             ),
@@ -416,25 +303,27 @@ module core_region
     .data_req_o_SH      (  tcdm_data_master.req       ),
     .data_add_o_SH      (  tcdm_data_master.add       ),
     .data_wen_o_SH      (  tcdm_data_master.wen       ),
-    .data_wdata_o_SH    (  tcdm_data_master.data      ),
+    .data_atop_o_SH     (  tcdm_data_master_atop      ),
+    .data_wdata_o_SH    (  tcdm_data_master.wdata     ),
     .data_be_o_SH       (  tcdm_data_master.be        ),
     .data_gnt_i_SH      (  tcdm_data_master.gnt       ),
     .data_r_valid_i_SH  (  tcdm_data_master.r_valid   ),
-    .data_r_rdata_i_SH  (  tcdm_data_master.r_data    ),
+    .data_r_rdata_i_SH  (  tcdm_data_master.r_rdata   ),
 
-    .data_req_o_EXT     (  periph_demux_bus.req         ),
-    .data_add_o_EXT     (  periph_demux_bus.add         ),
-    .data_wen_o_EXT     (  periph_demux_bus.wen         ),
-    .data_wdata_o_EXT   (  periph_demux_bus.wdata       ),
-    .data_be_o_EXT      (  periph_demux_bus.be          ),
-    .data_gnt_i_EXT     (  periph_demux_bus.gnt         ),
-    .data_r_valid_i_EXT (  periph_demux_bus.r_valid     ),
-    .data_r_rdata_i_EXT (  periph_demux_bus.r_rdata     ),
-    .data_r_opc_i_EXT   (  periph_demux_bus.r_opc       ),
+    .data_req_o_EXT     (  periph_demux_bus.req       ),
+    .data_add_o_EXT     (  periph_demux_bus.add       ),
+    .data_wen_o_EXT     (  periph_demux_bus.wen       ),
+    .data_wdata_o_EXT   (  periph_demux_bus.wdata     ),
+    .data_be_o_EXT      (  periph_demux_bus.be        ),
+    .data_gnt_i_EXT     (  periph_demux_bus.gnt       ),
+    .data_r_valid_i_EXT (  periph_demux_bus.r_valid   ),
+    .data_r_rdata_i_EXT (  periph_demux_bus.r_rdata   ),
+    .data_r_opc_i_EXT   (  periph_demux_bus.r_opc     ),
 
     .data_req_o_PE      (  periph_data_master.req     ),
     .data_add_o_PE      (  periph_data_master.add     ),
     .data_wen_o_PE      (  periph_data_master.wen     ),
+    .data_atop_o_PE     (  periph_data_master_atop    ),
     .data_wdata_o_PE    (  periph_data_master.wdata   ),
     .data_be_o_PE       (  periph_data_master.be      ),
     .data_gnt_i_PE      (  periph_data_master.gnt     ),
@@ -449,64 +338,66 @@ module core_region
     .CLUSTER_ID         (  cluster_id_i               )
   );
 
-  assign tcdm_data_master.boffs = '0;
-  assign tcdm_data_master.lrdy  = '1;
+  always_comb begin
+    periph_data_master.id = '0;
+    periph_data_master.id[CORE_ID] = 1'b1;
+    eu_ctrl_master.id = '0;
+    eu_ctrl_master.id[CORE_ID] = 1'b1;
+  end
 
-   periph_demux periph_demux_i (
-     .clk               ( clk_int                  ),
-     .rst_ni            ( rst_ni                   ),
+  periph_demux #(
+    .DEM_PER_BEFORE_TCDM_TS (DEM_PER_BEFORE_TCDM_TS)
+  ) periph_demux_i (
+    .clk               ( clk_int                  ),
+    .rst_ni            ( rst_ni                   ),
 
-     .data_req_i        ( periph_demux_bus.req     ),
-     .data_add_i        ( periph_demux_bus.add     ),
-     .data_wen_i        ( periph_demux_bus.wen     ),
-     .data_wdata_i      ( periph_demux_bus.wdata   ),
-     .data_be_i         ( periph_demux_bus.be      ),
-     .data_gnt_o        ( periph_demux_bus.gnt     ),
+    .data_req_i        ( periph_demux_bus.req     ),
+    .data_add_i        ( periph_demux_bus.add     ),
+    .data_wen_i        ( periph_demux_bus.wen     ),
+    .data_wdata_i      ( periph_demux_bus.wdata   ),
+    .data_be_i         ( periph_demux_bus.be      ),
+    .data_gnt_o        ( periph_demux_bus.gnt     ),
 
-     .data_r_valid_o    ( periph_demux_bus.r_valid ),
-     .data_r_opc_o      ( periph_demux_bus.r_opc   ),
-     .data_r_rdata_o    ( periph_demux_bus.r_rdata ),
+    .data_r_valid_o    ( periph_demux_bus.r_valid ),
+    .data_r_opc_o      ( periph_demux_bus.r_opc   ),
+    .data_r_rdata_o    ( periph_demux_bus.r_rdata ),
 
-     .data_req_o_MH     ( dma_ctrl_master.req      ),
-     .data_add_o_MH     ( dma_ctrl_master.add      ),
-     .data_wen_o_MH     ( dma_ctrl_master.wen      ),
-     .data_wdata_o_MH   ( dma_ctrl_master.wdata    ),
-     .data_be_o_MH      ( dma_ctrl_master.be       ),
-     .data_gnt_i_MH     ( dma_ctrl_master.gnt      ),
+    .data_req_o_MH     ( dma_ctrl_master.req      ),
+    .data_add_o_MH     ( dma_ctrl_master.add      ),
+    .data_wen_o_MH     ( dma_ctrl_master.wen      ),
+    .data_wdata_o_MH   ( dma_ctrl_master.wdata    ),
+    .data_be_o_MH      ( dma_ctrl_master.be       ),
+    .data_gnt_i_MH     ( dma_ctrl_master.gnt      ),
 
-     .data_r_valid_i_MH ( dma_ctrl_master.r_valid  ),
-     .data_r_rdata_i_MH ( dma_ctrl_master.r_rdata  ),
-     .data_r_opc_i_MH   ( dma_ctrl_master.r_opc    ),
+    .data_r_valid_i_MH ( dma_ctrl_master.r_valid  ),
+    .data_r_rdata_i_MH ( dma_ctrl_master.r_rdata  ),
+    .data_r_opc_i_MH   ( dma_ctrl_master.r_opc    ),
 
-     .data_req_o_EU     ( eu_ctrl_master.req       ),
-     .data_add_o_EU     ( eu_ctrl_master.add       ),
-     .data_wen_o_EU     ( eu_ctrl_master.wen       ),
-     .data_wdata_o_EU   ( eu_ctrl_master.wdata     ),
-     .data_be_o_EU      ( eu_ctrl_master.be        ),
-     .data_gnt_i_EU     ( eu_ctrl_master.gnt       ),
+    .data_req_o_EU     ( eu_ctrl_master.req       ),
+    .data_add_o_EU     ( eu_ctrl_master.add       ),
+    .data_wen_o_EU     ( eu_ctrl_master.wen       ),
+    .data_wdata_o_EU   ( eu_ctrl_master.wdata     ),
+    .data_be_o_EU      ( eu_ctrl_master.be        ),
+    .data_gnt_i_EU     ( eu_ctrl_master.gnt       ),
 
-     .data_r_valid_i_EU ( eu_ctrl_master.r_valid   ),
-     .data_r_rdata_i_EU ( eu_ctrl_master.r_rdata   ),
-     .data_r_opc_i_EU   ( eu_ctrl_master.r_opc     )
-    );
+    .data_r_valid_i_EU ( eu_ctrl_master.r_valid   ),
+    .data_r_rdata_i_EU ( eu_ctrl_master.r_rdata   ),
+    .data_r_opc_i_EU   ( eu_ctrl_master.r_opc     ),
+
+    .data_req_o_TM     ( tlb_miss_ctrl_master.req     ),
+    .data_add_o_TM     ( tlb_miss_ctrl_master.add     ),
+    .data_wen_o_TM     ( tlb_miss_ctrl_master.wen     ),
+    .data_wdata_o_TM   ( tlb_miss_ctrl_master.wdata   ),
+    .data_be_o_TM      ( tlb_miss_ctrl_master.be      ),
+    .data_gnt_i_TM     ( tlb_miss_ctrl_master.gnt     ),
+
+    .data_r_valid_i_TM ( tlb_miss_ctrl_master.r_valid ),
+    .data_r_rdata_i_TM ( tlb_miss_ctrl_master.r_rdata ),
+    .data_r_opc_i_TM   ( tlb_miss_ctrl_master.r_opc   )
+  );
 
   /* debug stuff */
   //synopsys translate_off
-
-  // CHECK IF THE CORE --> LS port is makin accesses in unmapped regions
-  always @(posedge clk_i)
-  begin : CHECK_ASSERTIONS
-`ifndef CLUSTER_ALIAS
-    if ((s_core_bus.req == 1'b1) && (s_core_bus.add < 32'h1000_0000)) begin
-      $error("ERROR_1 (0x00000000 -> 0x10000000) : Data interface is making a request on unmapped region --> %8x\t at time %t [ns]" ,s_core_bus.add, $time()/1000 );
-      $finish();
-    end
-    if ((s_core_bus.req == 1'b1) && (s_core_bus.add >= 32'h1040_0000) && ((s_core_bus.add < 32'h1A00_0000))) begin
-      $error("ERROR_2 (0x10400000 -> 0x1A000000) : Data interface is making a request on unmapped region --> %8x\t at time %t [ns]" ,s_core_bus.add, $time()/1000 );
-      $finish();
-    end
-`endif
-  end
 
   // COMPARE THE output of the instruction CACHE with the slm files generated by the compiler
 `ifdef DEBUG_FETCH_INTERFACE
@@ -593,7 +484,7 @@ module core_region
   endgenerate
  -----/\----- EXCLUDED -----/\----- */
 
-  // SELF CHECK ROUTINES TO compare instruction fetches with slm files
+  // SELF CHECK ROUTINES TO compare isntruction fetches with slm files
   always_ff @(posedge clk_i)
   begin
     if(instr_r_valid_i) begin

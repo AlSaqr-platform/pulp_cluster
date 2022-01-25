@@ -1,13 +1,3 @@
-// Copyright 2018 ETH Zurich and University of Bologna.
-// Copyright and related rights are licensed under the Solderpad Hardware
-// License, Version 0.51 (the "License"); you may not use this file except in
-// compliance with the License.  You may obtain a copy of the License at
-// http://solderpad.org/licenses/SHL-0.51. Unless required by applicable law
-// or agreed to in writing, software, hardware and materials distributed under
-// this License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
-// CONDITIONS OF ANY KIND, either express or implied. See the License for the
-// specific language governing permissions and limitations under the License.
-
 /*
  * cluster_bus_wrap.sv
  * Davide Rossi <davide.rossi@unibo.it>
@@ -48,12 +38,13 @@ module cluster_bus_wrap
   //INITIATOR
   AXI_BUS.Master    tcdm_master,
   AXI_BUS.Master    periph_master,
-  AXI_BUS.Master    ext_master
+  AXI_BUS.Master    ext_master, 
+  AXI_BUS.Master    tlb_cfg_master
 );
 
 
-  localparam NB_MASTER      = `NB_MASTER;
-  localparam NB_SLAVE       = `NB_SLAVE;
+  localparam NB_MASTER       = `NB_MASTER;
+  localparam NB_SLAVE        = `NB_SLAVE;
 
 
   //Ensure that AXI_ID out width has the correct size with an elaboration system task
@@ -62,12 +53,10 @@ module cluster_bus_wrap
   else if (AXI_ID_OUT_WIDTH > AXI_ID_IN_WIDTH + $clog2(NB_SLAVE))
     $warning("ID width of the AXI output port has the wrong length. It is larger than the required value. Trim it to the right length to get rid of this warning.");
 
-  if (AXI_ADDR_WIDTH != 32)
-    $fatal(1,"Address map is only defined for 32-bit addresses!");
+  if (AXI_ADDR_WIDTH != 64)
+    $fatal(1,"Address map is only defined for 64-bit addresses!");
   if (TCDM_SIZE == 0)
     $fatal(1,"TCDM size must be non-zero!");
-  if (TCDM_SIZE >128*1024)
-    $fatal(1,"TCDM size exceeds available address space in cluster bus!");
    
 
   // Crossbar
@@ -92,14 +81,15 @@ module cluster_bus_wrap
   ) axi_masters [NB_MASTER-1:0]();
    
   // assign here your axi masters
-  `AXI_ASSIGN(tcdm_master  , axi_masters[0])
-  `AXI_ASSIGN(periph_master, axi_masters[1])
-  `AXI_ASSIGN(ext_master   , axi_masters[2])
+  `AXI_ASSIGN(tcdm_master   , axi_masters[0])
+  `AXI_ASSIGN(periph_master , axi_masters[1])
+  `AXI_ASSIGN(tlb_cfg_master, axi_masters[2])
+  `AXI_ASSIGN(ext_master    , axi_masters[3])
   
   // address map
-  logic [31:0] cluster_base_addr;
-  assign cluster_base_addr = 32'h1000_0000 + ( cluster_id_i << 22);
-  localparam int unsigned N_RULES = 3;
+  logic [63:0] cluster_base_addr;
+  assign cluster_base_addr = 64'h1000_0000 + ( cluster_id_i << 22);
+  localparam int unsigned N_RULES = NB_MASTER;
   pulp_cluster_package::addr_map_rule_t [N_RULES-1:0] addr_map; 
 
 
@@ -110,12 +100,17 @@ module cluster_bus_wrap
   };
   assign addr_map[1] = '{ // Peripherals
     idx:  1,
-    start_addr: cluster_base_addr + 32'h0020_0000,
-    end_addr:   cluster_base_addr + 32'h0040_0000
+    start_addr: cluster_base_addr + 64'h0020_0000,
+    end_addr:   cluster_base_addr + 64'h0040_0000
   };
-  assign addr_map[2] = '{ // everything above cluster to ext_slave
+  assign addr_map[2] = '{ // C2H TLB Config port
     idx:  2,
-    start_addr: cluster_base_addr + 32'h0040_0000,
+    start_addr: cluster_base_addr + 64'h0040_0000,
+    end_addr:   cluster_base_addr + 64'h0050_0000
+  };
+  assign addr_map[3] = '{ // everything above cluster to ext_slave
+    idx:  3,
+    start_addr: cluster_base_addr + 64'h0050_0000,
     end_addr:   32'hFFFF_FFFF
   };
     
@@ -131,9 +126,10 @@ module cluster_bus_wrap
                                                     MaxSlvTrans: DMA_NB_OUTSND_BURSTS + NB_CORES,       //Allow up to 4 in-flight transactions
                                                     //per slave port
                                                     FallThrough: 1'b0,       //Use the reccomended default config 
-                                                    LatencyMode: axi_pkg::NO_LATENCY, // CUT_ALL_AX | axi_pkg::DemuxW,
+                                                    LatencyMode: axi_pkg::CUT_ALL_AX | axi_pkg::DemuxW,
                                                     AxiIdWidthSlvPorts: AXI_ID_IN_WIDTH,
                                                     AxiIdUsedSlvPorts: AXI_ID_IN_WIDTH,
+                                                    UniqueIds: 1'b0,
                                                     AxiAddrWidth: AXI_ADDR_WIDTH,
                                                     AxiDataWidth: AXI_DATA_WIDTH,
                                                     NoAddrRules: N_RULES
@@ -156,5 +152,6 @@ module cluster_bus_wrap
   );
 
 endmodule
+
 
 

@@ -1,0 +1,17 @@
+package:
+  name: event_unit_flex
+
+sources:
+  include_dirs: ["."]
+  files:
+    - event_unit_core.sv # multiple modules defined
+    - hw_barrier_unit.sv
+    - hw_dispatch.sv
+    - hw_mutex_unit.sv # multiple modules defined
+    - interc_sw_evt_trig.sv
+    - periph_FIFO_id.sv
+    - soc_periph_fifo.sv
+    # Level 1
+    - event_unit_interface_mux.sv
+    # Level 2
+    - event_unit_top.sv
