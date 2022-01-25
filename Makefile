@@ -9,15 +9,10 @@ VSIM ?= vsim
 # SYNTHESIS
 # --------------
 
-define generate_synopsys
-	echo 'set ROOT [file normalize [file dirname [info script]]/../../..]' > $1
-	bender script synopsys $2 | grep -v "set ROOT" >> $1
-	echo >> $1
-endef
-
 gf22/cockpit.log:
 	cd gf22 && icdesign gf22 -update all -nogui
 
-gf22/synopsys/scripts/analyze.tcl: Bender.yml | gf22/cockpit.log
-	$(call generate_synopsys, $@, -t rtl -t default -t synthesis -t gf22,..)
+gf22/synopsys/scripts/analyze.tcl:
+	echo 'set ROOT [file normalize [file dirname [info script]]/../../../]' > gf22/synopsys/scripts/analyze.tcl
+	bender script synopsys -t rtl -t synthesis -t asic | grep -v "set ROOT" >> gf22/synopsys/scripts/analyze.tcl
 
