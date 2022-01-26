@@ -11,7 +11,7 @@ dependencies:
   hier-icache: { git: "https://github.com/pulp-platform/hier-icache.git", rev: "1e94c16b8f3082af40cc7e579027dc485202c1d6" }
   icache_private: { git: "https://github.com/AlSaqr-platform/icache_private.git", rev: "84436443d3a2dbad0b94a85c2c5cc8915632fd26" }
   cluster_peripherals: { path: "rtl/dependencies/cluster_peripherals" }
-  fpu_interco: { git: "https://github.com/AlSaqr-platform/fpu_interco", rev: "5263abb5872d919bf3bde6bf52e8fdaffe2f9021" }
+  fpu_interco: { git: "https://github.com/AlSaqr-platform/fpu_interco", rev: "29e9b906c81679bd237a77e871d71686967d5279" }
   axi: { git: "https://github.com/pulp-platform/axi.git", version: 0.29.1 }
   common_cells: { git: "https://github.com/pulp-platform/common_cells.git", version: 1.13.1 }
   tech_cells_generic: { git: "https://github.com/pulp-platform/tech_cells_generic.git", version: 0.2.4 }
