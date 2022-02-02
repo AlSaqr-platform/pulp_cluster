@@ -637,8 +637,8 @@ module pulp_cluster
     .mem_addr_o   ( s_ext_xbar_bus_addr   ),
     .mem_wdata_o  ( s_ext_xbar_bus_wdata  ),
     .mem_strb_o   ( s_ext_xbar_bus_be     ),
-    // .mem_atop_o   ( s_ext_xbar_bus_atop   ),
-    .mem_atop_o   (     /* unused */      ),           
+    .mem_atop_o   ( s_ext_xbar_bus_atop   ),
+    // .mem_atop_o   (     /* unused */      ),           
     .mem_we_o     ( s_ext_xbar_bus_wen    ),
     .mem_rvalid_i ( s_ext_xbar_bus_rvalid ),
     .mem_rdata_i  ( s_ext_xbar_bus_rdata  )

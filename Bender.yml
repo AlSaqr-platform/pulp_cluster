@@ -2,7 +2,7 @@ package:
   name: pulp_cluster
 
 dependencies:
-  axi2mem: { path: "rtl/dependencies/axi2mem" }
+  axi2mem: { git: "https://github.com/AlSaqr-platform/axi2mem.git", rev: "7aa4c51435f3489e994f60113bf93b1fc8e5f1f5" }
   axi2per: { path: "rtl/dependencies/axi2per" }
   per2axi: { path: "rtl/dependencies/per2axi" }
   cluster_interconnect: { path: "rtl/dependencies/cluster_interconnect" }
@@ -24,11 +24,8 @@ sources:
   # Packages & defines
   - packages/apu_package.sv
   - packages/pulp_cluster_package.sv
-  - rtl/dependencies/axi2mem/cluster_riscv_defines.sv
   - rtl/dependencies/cluster_interconnect/rtl/tcdm_interconnect/tcdm_interconnect_pkg.sv
   # Dependencies
-  # axi2mem
-  - rtl/dependencies/axi2mem/axi2mem.sv
   # axi2per
   - rtl/dependencies/axi2per/axi2per_req_channel.sv
   - rtl/dependencies/axi2per/axi2per_res_channel.sv
