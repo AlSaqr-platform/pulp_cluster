@@ -13,7 +13,7 @@ dependencies:
   cluster_peripherals: { path: "rtl/dependencies/cluster_peripherals" }
   fpu_interco: { git: "https://github.com/AlSaqr-platform/fpu_interco", rev: "29e9b906c81679bd237a77e871d71686967d5279" }
   axi: { git: "https://github.com/pulp-platform/axi.git", version: 0.29.1 }
-  common_cells: { git: "https://github.com/pulp-platform/common_cells.git", version: 1.13.1 }
+  common_cells: { git: "https://github.com/pulp-platform/common_cells.git", version: 1.21.1 }
   tech_cells_generic: { git: "https://github.com/pulp-platform/tech_cells_generic.git", version: 0.2.4 }
   riscv: { git: "git@github.com:AlSaqr-platform/riscv_nn.git", rev: "ee8a4a972e29f9a573fa215ffb591bdcced37996"}
   timer_unit: { git: "https://github.com/pulp-platform/timer_unit.git", version: 1.0.0 }
