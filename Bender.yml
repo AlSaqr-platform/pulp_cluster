@@ -3,7 +3,7 @@ package:
 
 dependencies:
   axi2mem: { git: "https://github.com/AlSaqr-platform/axi2mem.git", rev: "7aa4c51435f3489e994f60113bf93b1fc8e5f1f5" }
-  axi2per: { path: "rtl/dependencies/axi2per" }
+  axi2per: { git: "https://github.com/AlSaqr-platform/axi2per.git", rev: "35883fab3d00e104bded0299bff69b7863e2d331" }
   per2axi: { path: "rtl/dependencies/per2axi" }
   cluster_interconnect: { path: "rtl/dependencies/cluster_interconnect" }
   event_unit_flex: { path: "rtl/dependencies/event_unit_flex" }
@@ -26,10 +26,6 @@ sources:
   - packages/pulp_cluster_package.sv
   - rtl/dependencies/cluster_interconnect/rtl/tcdm_interconnect/tcdm_interconnect_pkg.sv
   # Dependencies
-  # axi2per
-  - rtl/dependencies/axi2per/axi2per_req_channel.sv
-  - rtl/dependencies/axi2per/axi2per_res_channel.sv
-  - rtl/dependencies/axi2per/axi2per.sv
   # cluster_interconnect
   - rtl/dependencies/cluster_interconnect/rtl/interfaces/tcdm_bank_mem_bus.sv
   - rtl/dependencies/cluster_interconnect/rtl/interfaces/xbar_demux_bus.sv

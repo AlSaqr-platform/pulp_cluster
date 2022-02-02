@@ -37,7 +37,6 @@ module axi2per_wrap
   output logic [5:0]   periph_master_atop_o,
   output logic         busy_o
 );
-   assign periph_master_atop_o = '0;
    
   axi2per_cluster         #( 
     .PER_ADDR_WIDTH        ( PER_ADDR_WIDTH        ),
@@ -62,8 +61,8 @@ module axi2per_wrap
     .axi_slave_aw_size_i   ( axi_slave.aw_size     ),
     .axi_slave_aw_burst_i  ( axi_slave.aw_burst    ),
     .axi_slave_aw_lock_i   ( axi_slave.aw_lock     ),
-    // .axi_slave_aw_atop_i   ( axi_slave.aw_atop     ),
-    .axi_slave_aw_atop_i   ( '0                    ),
+    .axi_slave_aw_atop_i   ( axi_slave.aw_atop     ),
+    // .axi_slave_aw_atop_i   ( '0                    ),
     .axi_slave_aw_cache_i  ( axi_slave.aw_cache    ),
     .axi_slave_aw_qos_i    ( axi_slave.aw_qos      ),
     .axi_slave_aw_id_i     ( axi_slave.aw_id       ),
@@ -109,8 +108,8 @@ module axi2per_wrap
     .per_master_add_o      ( periph_master.add     ),
     .per_master_we_no      ( periph_master.wen     ),
     .per_master_wdata_o    ( periph_master.wdata   ),
-    // .per_master_atop_o     ( periph_master_atop_o  ),
-    .per_master_atop_o     (     /* unused */      ),
+    .per_master_atop_o     ( periph_master_atop_o  ),
+    // .per_master_atop_o     (     /* unused */      ),
     .per_master_be_o       ( periph_master.be      ),
     .per_master_gnt_i      ( periph_master.gnt     ),
 
