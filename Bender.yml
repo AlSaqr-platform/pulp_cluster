@@ -4,7 +4,7 @@ package:
 dependencies:
   axi2mem: { git: "https://github.com/AlSaqr-platform/axi2mem.git", rev: "7aa4c51435f3489e994f60113bf93b1fc8e5f1f5" }
   axi2per: { git: "https://github.com/AlSaqr-platform/axi2per.git", rev: "35883fab3d00e104bded0299bff69b7863e2d331" }
-  per2axi: { path: "rtl/dependencies/per2axi" }
+  per2axi: { git: "https://github.com/AlSaqr-platform/per2axi.git", rev: 3eac7f254b6c499745d15b51ce1d92d786a4fcc4 }
   cluster_interconnect: { path: "rtl/dependencies/cluster_interconnect" }
   event_unit_flex: { path: "rtl/dependencies/event_unit_flex" }
   dma: { path: "rtl/dependencies/dma" }
@@ -44,11 +44,6 @@ sources:
   - rtl/dependencies/event_unit_flex/soc_periph_fifo.sv
   - rtl/dependencies/event_unit_flex/event_unit_interface_mux.sv
   - rtl/dependencies/event_unit_flex/event_unit_top.sv
-  # per2axi
-  - rtl/dependencies/per2axi/src/per2axi_busy_unit.sv
-  - rtl/dependencies/per2axi/src/per2axi_req_channel.sv
-  - rtl/dependencies/per2axi/src/per2axi_res_channel.sv
-  - rtl/dependencies/per2axi/src/per2axi.sv
   # Level 0
   - rtl/axi2per_wrap.sv
   - rtl/cluster_bus_wrap.sv
