@@ -29,17 +29,17 @@ package pulp_cluster_package;
   parameter NB_CLUSTER_SPERIPHS          = 10;
   
   // position of peripherals on slave port of periph interconnect
-  parameter SPER_EOC_ID      = 0;
-  parameter SPER_TIMER_ID    = 1;
-  parameter SPER_EVENT_U_ID  = 2;
-                             // 3 also used for Event Unit
-  parameter SPER_HWPE_ID     = 4;
-  parameter SPER_ICACHE_CTRL = 5;
-  parameter SPER_DMA_CL_ID   = 6;
-  parameter SPER_DMA_FC_ID   = 7;
-  parameter SPER_DECOMP_ID   = 8; // Currently unused / grounded, available for specific designs
-  parameter SPER_EXT_ID      = 9; 
-  parameter SPER_ERROR_ID    = 10;
+  parameter SPER_EOC_ID      = 0;                                                                // 1020_0000 - 1020_0400
+  parameter SPER_TIMER_ID    = 1;                                                                // 1020_0400 - 1020_0800
+  parameter SPER_EVENT_U_ID  = 2;                                                                // 1020_0800 - 1020_1000
+                             // 3 also used for Event Unit                                       
+  parameter SPER_HWPE_ID     = 4;                                                                // 1020_1000 - 1020_1400
+  parameter SPER_ICACHE_CTRL = 5;                                                                // 1020_1400 - 1020_1800
+  parameter SPER_DMA_CL_ID   = 6;                                                                // 1020_1800 - 1020_1C00
+  parameter SPER_DMA_FC_ID   = 7;                                                                // 1020_1C00 - 1020_2000
+  parameter SPER_DECOMP_ID   = 8; // Currently unused / grounded, available for specific designs // 1020_2000 - 1020_2400
+  parameter SPER_EXT_ID      = 9;                                                                // 1020_2400 - 1020_2800
+  parameter SPER_ERROR_ID    = 10;                                                               // 1020_2800 - 1020_2C00
   
   // if set to 1, then instantiate APU in the cluster
   // parameter APU_CLUSTER = 0;
