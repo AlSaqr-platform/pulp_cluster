@@ -2,22 +2,22 @@ package:
   name: pulp_cluster
 
 dependencies:
-  axi2mem: { git: "https://github.com/AlSaqr-platform/axi2mem.git", rev: "7aa4c51435f3489e994f60113bf93b1fc8e5f1f5" }
-  axi2per: { git: "https://github.com/AlSaqr-platform/axi2per.git", rev: "35883fab3d00e104bded0299bff69b7863e2d331" }
-  per2axi: { git: "https://github.com/AlSaqr-platform/per2axi.git", rev: 3eac7f254b6c499745d15b51ce1d92d786a4fcc4 }
-  cluster_interconnect: { path: "rtl/dependencies/cluster_interconnect" }
-  event_unit_flex: { path: "rtl/dependencies/event_unit_flex" }
-  dma: { path: "rtl/dependencies/dma" }
-  hier-icache: { git: "https://github.com/pulp-platform/hier-icache.git", rev: "1e94c16b8f3082af40cc7e579027dc485202c1d6" }
-  icache_private: { git: "https://github.com/AlSaqr-platform/icache_private.git", rev: "84436443d3a2dbad0b94a85c2c5cc8915632fd26" }
-  cluster_peripherals: { path: "rtl/dependencies/cluster_peripherals" }
-  fpu_interco: { git: "https://github.com/AlSaqr-platform/fpu_interco", rev: "29e9b906c81679bd237a77e871d71686967d5279" }
-  axi: { git: "https://github.com/pulp-platform/axi.git", version: 0.29.1 }
-  common_cells: { git: "https://github.com/pulp-platform/common_cells.git", version: 1.21.1 }
-  tech_cells_generic: { git: "https://github.com/pulp-platform/tech_cells_generic.git", version: 0.2.4 }
-  riscv: { git: "git@github.com:AlSaqr-platform/riscv_nn.git", rev: "ee8a4a972e29f9a573fa215ffb591bdcced37996"}
-  timer_unit: { git: "https://github.com/pulp-platform/timer_unit.git", version: 1.0.0 }
-  scm: { git: "https://github.com/pulp-platform/scm.git", version: 1.0.1}
+  axi2mem:              { git: "https://github.com/AlSaqr-platform/axi2mem.git"         ,  rev: "7aa4c51435f3489e994f60113bf93b1fc8e5f1f5" }
+  axi2per:              { git: "https://github.com/AlSaqr-platform/axi2per.git"         ,  rev: "35883fab3d00e104bded0299bff69b7863e2d331" }
+  per2axi:              { git: "https://github.com/AlSaqr-platform/per2axi.git"         ,  rev: "3eac7f254b6c499745d15b51ce1d92d786a4fcc4" }
+  cluster_interconnect: { path: "rtl/dependencies/cluster_interconnect"                                                                    }
+  event_unit_flex:      { git: "https://github.com/AlSaqr-platform/event_unit_flex.git" ,  rev: 1.4.1                                      }
+  dma:                  { path: "rtl/dependencies/dma"                                                                                     }
+  hier-icache:          { git: "https://github.com/pulp-platform/hier-icache.git"       , rev: "1e94c16b8f3082af40cc7e579027dc485202c1d6"  }
+  icache_private:       { git: "https://github.com/AlSaqr-platform/icache_private.git"  , rev: "84436443d3a2dbad0b94a85c2c5cc8915632fd26"  }
+  cluster_peripherals:  { path: "rtl/dependencies/cluster_peripherals"                                                                     }
+  fpu_interco:          { git: "https://github.com/AlSaqr-platform/fpu_interco"         , rev: "29e9b906c81679bd237a77e871d71686967d5279"  }
+  axi:                  { git: "https://github.com/pulp-platform/axi.git"               , version: 0.29.1                                  }
+  common_cells:         { git: "https://github.com/pulp-platform/common_cells.git"      , version: 1.21.1                                  }
+  tech_cells_generic:   { git: "https://github.com/pulp-platform/tech_cells_generic.git", version: 0.2.4                                   }
+  riscv:                { git: "git@github.com:AlSaqr-platform/riscv_nn.git"            , rev: "ee8a4a972e29f9a573fa215ffb591bdcced37996"  }
+  timer_unit:           { git: "https://github.com/pulp-platform/timer_unit.git"        , version: 1.0.0                                   }
+  scm:                  { git: "https://github.com/pulp-platform/scm.git"               , version: 1.0.1                                   }
 
 sources:
   # Level -1
@@ -34,16 +34,6 @@ sources:
   - rtl/dependencies/cluster_interconnect/rtl/interfaces/xbar_tcdm_bus.sv
   # cluster_peripherals
   - rtl/dependencies/cluster_peripherals/cluster_control_unit/cluster_control_unit.sv
-  # event_unit_flex
-  - rtl/dependencies/event_unit_flex/event_unit_core.sv # multiple modules defined
-  - rtl/dependencies/event_unit_flex/hw_barrier_unit.sv
-  - rtl/dependencies/event_unit_flex/hw_dispatch.sv
-  - rtl/dependencies/event_unit_flex/hw_mutex_unit.sv # multiple modules defined
-  - rtl/dependencies/event_unit_flex/interc_sw_evt_trig.sv
-  - rtl/dependencies/event_unit_flex/periph_FIFO_id.sv
-  - rtl/dependencies/event_unit_flex/soc_periph_fifo.sv
-  - rtl/dependencies/event_unit_flex/event_unit_interface_mux.sv
-  - rtl/dependencies/event_unit_flex/event_unit_top.sv
   # Level 0
   - rtl/axi2per_wrap.sv
   - rtl/cluster_bus_wrap.sv
