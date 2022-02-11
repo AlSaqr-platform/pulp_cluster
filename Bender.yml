@@ -3,8 +3,8 @@ package:
 
 dependencies:
   axi_to_mem:           { git: "https://github.com/AlSaqr-platform/axi2mem.git"         , rev: "alsaqr_cluster"                           }
-  axi2per:              { git: "https://github.com/AlSaqr-platform/axi2per.git"         , rev: "35883fab3d00e104bded0299bff69b7863e2d331" }
-  per2axi:              { git: "https://github.com/AlSaqr-platform/per2axi.git"         , rev: "3eac7f254b6c499745d15b51ce1d92d786a4fcc4" }
+  axi2per:              { git: "https://github.com/AlSaqr-platform/axi2per.git"         , rev: "alsaqr_cluster"                           }
+  per2axi:              { git: "https://github.com/AlSaqr-platform/per2axi.git"         , rev: "alsaqr_cluster"                           }
   cluster_interconnect: { path: "rtl/dependencies/cluster_interconnect"                                                                   }
   event_unit_flex:      { git: "https://github.com/AlSaqr-platform/event_unit_flex.git" , rev: 1.4.1                                      }
   cluster_dma:          { git: "https://github.com/AlSaqr-platform/cluster-dma.git"     , rev: master                                     }
