@@ -619,7 +619,7 @@ module pulp_cluster
     .mst_resp_i (ext_tcdm_resp_buf)
   );
 
-  axi2mem_cluster #(
+  axi_to_mem   #(
     .axi_req_t  ( axi_req_t           ),
     .axi_resp_t ( axi_resp_t          ),
     .AddrWidth  ( 32                  ),
