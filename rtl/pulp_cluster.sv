@@ -619,7 +619,7 @@ module pulp_cluster
     .mst_resp_i (ext_tcdm_resp_buf)
   );
 
-  axi2mem_cluster #(
+  axi_to_mem   #(
     .axi_req_t  ( axi_req_t           ),
     .axi_resp_t ( axi_resp_t          ),
     .AddrWidth  ( 32                  ),
@@ -637,8 +637,7 @@ module pulp_cluster
     .mem_addr_o   ( s_ext_xbar_bus_addr   ),
     .mem_wdata_o  ( s_ext_xbar_bus_wdata  ),
     .mem_strb_o   ( s_ext_xbar_bus_be     ),
-    // .mem_atop_o   ( s_ext_xbar_bus_atop   ),
-    .mem_atop_o   (     /* unused */      ),           
+    .mem_atop_o   ( s_ext_xbar_bus_atop   ),
     .mem_we_o     ( s_ext_xbar_bus_wen    ),
     .mem_rvalid_i ( s_ext_xbar_bus_rvalid ),
     .mem_rdata_i  ( s_ext_xbar_bus_rdata  )
@@ -696,8 +695,7 @@ module pulp_cluster
     .rst_ni               ( rst_ni                            ),
     .test_en_i            ( test_mode_i                       ),
     .periph_slave         ( s_xbar_speriph_bus[SPER_EXT_ID]   ),
-    // .periph_slave_atop_i  ( s_xbar_speriph_atop[SPER_EXT_ID]  ),
-    .periph_slave_atop_i  (                '0                 ),
+    .periph_slave_atop_i  ( s_xbar_speriph_atop[SPER_EXT_ID]  ),
     .tryx_req_i           ( tryx_req                          ),
     .axi_xresp_decerr_o   ( tryx_xresp_decerr                 ),
     .axi_xresp_slverr_o   ( tryx_xresp_slverr                 ),
@@ -754,8 +752,7 @@ module pulp_cluster
     // .core_tcdm_slave_atop   ( s_core_xbar_bus_atop                ),
     .core_tcdm_slave_atop   (               '0                    ),
     .ext_slave              ( s_ext_xbar_bus                      ),
-    // .ext_slave_atop         ( s_ext_xbar_bus_atop                 ),
-    .ext_slave_atop         (                  '0                 ),
+    .ext_slave_atop         ( s_ext_xbar_bus_atop                 ),
     .dma_slave              ( s_dma_xbar_bus                      ),
 
     .tcdm_sram_master       ( s_tcdm_bus_sram                     ),
