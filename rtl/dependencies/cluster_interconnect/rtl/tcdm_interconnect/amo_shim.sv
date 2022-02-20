@@ -67,7 +67,7 @@ module amo_shim_cluster #(
            amo_res         = (upper_word_q) ? out_rdata_i[DataWidth-1:DataWidth-32] : out_rdata_i[31:0];
            amo_operand_b_d = (!in_be_i[0])  ? in_wdata_i[DataWidth-1:DataWidth-32]  : in_wdata_i[31:0];
            swap_value_d    = in_wdata_i[DataWidth-1:DataWidth-1];
-           upper_word_d    = in_be_i[4];
+           upper_word_d    = in_be_i[DataWidth/8-1];
         end else begin // Standard 32-bit instantiation
            amo_operand_a   = out_rdata_i[31:0];
            amo_res         = out_rdata_i[31:0];
