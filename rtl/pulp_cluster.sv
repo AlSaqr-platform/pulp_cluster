@@ -89,8 +89,8 @@ module pulp_cluster
   parameter AXI_DATA_C2S_WIDTH    = AXI_DATA_OUT_WIDTH,
   parameter AXI_DATA_S2C_WIDTH    = AXI_DATA_IN_WIDTH,
   parameter AXI_USER_WIDTH        = 1,
-  parameter AXI_ID_IN_WIDTH       = 3,
-  parameter AXI_ID_OUT_WIDTH      = 5,
+  parameter AXI_ID_IN_WIDTH       = 3, // It's the masters' ID width
+  parameter AXI_ID_OUT_WIDTH      = 5, // It's the slaves' ID width
   parameter AXI_STRB_C2S_WIDTH    = AXI_DATA_C2S_WIDTH/8,
   parameter AXI_STRB_S2C_WIDTH    = AXI_DATA_S2C_WIDTH/8,
   parameter DC_SLICE_BUFFER_WIDTH = 8,
@@ -399,7 +399,7 @@ module pulp_cluster
   AXI_BUS #(
     .AXI_ADDR_WIDTH ( AXI_ADDR_WIDTH     ),
     .AXI_DATA_WIDTH ( AXI_DATA_C2S_WIDTH ),
-    .AXI_ID_WIDTH   ( AXI_ID_OUT_WIDTH   ),
+    .AXI_ID_WIDTH   ( AXI_ID_IN_WIDTH    ),
     .AXI_USER_WIDTH ( AXI_USER_WIDTH     )
   ) s_core_instr_bus();
 
@@ -1133,9 +1133,9 @@ module pulp_cluster
     .PRI_CACHE_SIZE       ( 512                 ), //= 512,     // in Byte
     .PRI_CACHE_LINE       ( 1                   ), //= 1,       // in word of [PRI_FETCH_DATA_WIDTH]
 
-    .AXI_ID               ( AXI_ID_OUT_WIDTH    ), //= 6,
-    .AXI_ADDR             ( AXI_ADDR_WIDTH      ), //= 32,
-    .AXI_USER             ( AXI_USER_WIDTH      ), //= 6,
+    .AXI_ID               ( AXI_ID_IN_WIDTH     ), //= 3,
+    .AXI_ADDR             ( AXI_ADDR_WIDTH      ), //= 64,
+    .AXI_USER             ( AXI_USER_WIDTH      ), //= 1,
     .AXI_DATA             ( AXI_DATA_OUT_WIDTH  ), //= 64,
 
     .USE_REDUCED_TAG      ( USE_REDUCED_TAG     ), //= "TRUE",  // TRUE | FALSE
