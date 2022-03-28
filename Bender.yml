@@ -8,7 +8,7 @@ dependencies:
   cluster_interconnect: { path: "rtl/dependencies/cluster_interconnect"                                                                   }
   event_unit_flex:      { git: "https://github.com/AlSaqr-platform/event_unit_flex.git" , rev: 1.4.1                                      }
   cluster_dma:          { git: "https://github.com/AlSaqr-platform/cluster-dma.git"     , rev: master                                     }
-  hier-icache:          { git: "https://github.com/pulp-platform/hier-icache.git"       , rev: "6e9bb1ee0f255b043eb9058c42f0db5fb59b3d44" }
+  hier-icache:          { git: "https://github.com/pulp-platform/hier-icache.git"       , rev: "c82025995fbb18e045bb14ad2e94b35734994956" }
   icache_private:       { git: "https://github.com/AlSaqr-platform/icache_private.git"  , rev: "84436443d3a2dbad0b94a85c2c5cc8915632fd26" }
   cluster_peripherals:  { path: "rtl/dependencies/cluster_peripherals"                                                                    }
   fpu_interco:          { git: "https://github.com/AlSaqr-platform/fpu_interco"         , rev: "38aa14205de38f01451e8a969089bc31f4c6f444" }
