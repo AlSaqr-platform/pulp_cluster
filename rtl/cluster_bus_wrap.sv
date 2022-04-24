@@ -39,9 +39,8 @@ module cluster_bus_wrap
   AXI_BUS.Master    tcdm_master,
   AXI_BUS.Master    periph_master,
   AXI_BUS.Master    ext_master, 
-  AXI_BUS.Master    tlb_cfg_master
+  AXI_BUS.Master    axi2lite_master
 );
-
 
   localparam NB_MASTER       = `NB_MASTER;
   localparam NB_SLAVE        = `NB_SLAVE;
@@ -81,10 +80,10 @@ module cluster_bus_wrap
   ) axi_masters [NB_MASTER-1:0]();
    
   // assign here your axi masters
-  `AXI_ASSIGN(tcdm_master   , axi_masters[0])
-  `AXI_ASSIGN(periph_master , axi_masters[1])
-  `AXI_ASSIGN(tlb_cfg_master, axi_masters[2])
-  `AXI_ASSIGN(ext_master    , axi_masters[3])
+  `AXI_ASSIGN(tcdm_master    , axi_masters[0])
+  `AXI_ASSIGN(periph_master  , axi_masters[1])
+  `AXI_ASSIGN(axi2lite_master, axi_masters[2])
+  `AXI_ASSIGN(ext_master     , axi_masters[3])
   
   // address map
   logic [63:0] cluster_base_addr;
@@ -103,7 +102,7 @@ module cluster_bus_wrap
     start_addr: cluster_base_addr + 64'h0020_0000,
     end_addr:   cluster_base_addr + 64'h0040_0000
   };
-  assign addr_map[2] = '{ // C2H TLB Config port
+  assign addr_map[2] = '{ // AXI4 to AXI-LITE Port
     idx:  2,
     start_addr: cluster_base_addr + 64'h0040_0000,
     end_addr:   cluster_base_addr + 64'h0050_0000
