@@ -608,8 +608,8 @@ module pulp_cluster
     .b_chan_t   (b_chan_t),
     .ar_chan_t  (ar_chan_t),
     .r_chan_t   (r_chan_t),
-    .req_t      (axi_req_t),
-    .resp_t     (axi_resp_t)
+    .axi_req_t  (axi_req_t),
+    .axi_resp_t (axi_resp_t)
   ) i_axi_to_mem_cut (
     .clk_i      (clk_cluster),
     .rst_ni,
