@@ -177,6 +177,8 @@ module pulp_cluster
   output logic                               pf_evt_valid_o,
 
   input logic [NB_CORES-1:0]                 dbg_irq_valid_i,
+
+  input logic                                host_mailbox_irq_i,
  
   input logic [LOG_DEPTH:0]                  async_cluster_events_wptr_i,
   output logic [LOG_DEPTH:0]                 async_cluster_events_rptr_o,
@@ -310,6 +312,8 @@ module pulp_cluster
   logic [NB_CORES-1:0][1:0]  s_xne_evt;
   logic                      s_xne_busy;
 
+  logic                     s_host_mailbox_irq;
+   
   logic [NB_CORES-1:0]               clk_core_en;
   logic                              clk_cluster;
 
@@ -805,6 +809,17 @@ module pulp_cluster
     .ctrl_slave   ( s_core_tlbmissctrl_bus  )
   );
 
+
+  sync_wedge i_host_mailbox_irq_sync (
+              .clk_i    ( clk_cluster        ),
+              .rst_ni   ( rst_ni             ),
+              .en_i     ( 1'b1               ),
+              .serial_i ( host_mailbox_irq_i ),
+              .r_edge_o ( s_host_mailbox_irq ),
+              .f_edge_o (                    ),
+              .serial_o (                    )
+              );
+   
   cluster_peripherals #(
     .NB_CORES       ( NB_CORES       ),
     .NB_MPERIPHS    ( NB_MPERIPHS    ),
@@ -821,6 +836,7 @@ module pulp_cluster
     .ref_clk_i              ( ref_clk_i                          ),
     .test_mode_i            ( test_mode_i                        ),
     .busy_o                 ( s_cluster_periphs_busy             ),
+    .host_mailbox_irq_i     ( s_host_mailbox_irq                 ),
     .dma_events_i           ( s_dma_event                        ),
     .dma_irq_i              ( s_dma_irq                          ),
     .en_sa_boot_i           ( en_sa_boot_i                       ),

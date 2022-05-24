@@ -36,8 +36,9 @@ module cluster_peripherals
   input  logic                        clk_i,
   input  logic                        rst_ni,
   input  logic                        ref_clk_i,
-  input  logic                         test_mode_i,
+  input  logic                        test_mode_i,
 
+  input  logic                        host_mailbox_irq_i,
   input  logic [NB_CORES-1:0]         dma_events_i,
   input  logic [NB_CORES-1:0]         dma_irq_i,
   input  logic                        en_sa_boot_i,
@@ -136,7 +137,7 @@ module cluster_peripherals
   // decide between common or core-specific event sources
   generate
     for (genvar I=0; I<NB_CORES; I++) begin
-      assign s_cluster_events[I] = {30'd0,pf_event_o,dma_pe_irq_i};
+      assign s_cluster_events[I] = {29'd0,host_mailbox_irq_i,pf_event_o,dma_pe_irq_i};
       assign s_acc_events[I]     = hwacc_events_i[I];
       assign s_timer_events[I]   = {s_timer_out_hi_event,s_timer_out_lo_event};
       assign s_dma_events[I]     = {dma_irq_i[I],dma_events_i[I]};
