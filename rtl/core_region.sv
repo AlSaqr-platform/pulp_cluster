@@ -179,7 +179,6 @@ module core_region import apu_package::*;
   riscv_core #(
     .INSTR_RDATA_WIDTH   ( INSTR_RDATA_WIDTH ),
     .N_EXT_PERF_COUNTERS ( 5                 ),
-    .Zfinx               ( 1                 ),
     .PULP_SECURE         ( 0                 ),
     .FPU                 ( FPU               ),
     .FP_DIVSQRT          ( FP_DIVSQRT        ),
@@ -209,7 +208,7 @@ module core_region import apu_package::*;
     .data_addr_o           ( s_core_bus.add           ),
     .data_wdata_o          ( s_core_bus.wdata         ),
     .data_we_o             ( s_core_bus.we            ),
-    // .data_atop_o           ( s_core_bus.atop          ),
+    .data_atop_o           ( s_core_bus.atop          ),
     .data_req_o            ( s_core_bus.req           ),
     .data_be_o             ( s_core_bus.be            ),
     .data_rdata_i          ( s_core_bus.r_rdata       ),
