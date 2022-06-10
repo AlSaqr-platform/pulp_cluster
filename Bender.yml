@@ -15,7 +15,7 @@ dependencies:
   axi:                  { git: "https://github.com/pulp-platform/axi.git"               , version: 0.35.3                                 }
   common_cells:         { git: "https://github.com/pulp-platform/common_cells.git"      , version: 1.21.1                                 }
   tech_cells_generic:   { git: "https://github.com/pulp-platform/tech_cells_generic.git", version: 0.2.4                                  }
-  riscv:                { git: "git@github.com:AlSaqr-platform/riscv_nn.git"            , rev: "92506f3351c18edf53758add7dd5a4fd69b7c8c1" }
+  riscv:                { git: "git@github.com:AlSaqr-platform/riscv_nn.git"            , rev: "hero" }
   timer_unit:           { git: "https://github.com/pulp-platform/timer_unit.git"        , version: 1.0.0                                  }
   scm:                  { git: "https://github.com/pulp-platform/scm.git"               , version: 1.0.1                                  }
 
