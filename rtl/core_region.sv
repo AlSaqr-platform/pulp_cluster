@@ -288,8 +288,7 @@ module core_region import apu_package::*;
     .data_req_i         (  s_core_bus.req             ),
     .data_add_i         (  s_core_bus.add             ),
     .data_wen_i         ( ~s_core_bus.we              ), //inverted when using OR10N
-    // .data_atop_i        (  s_core_bus.atop            ),
-    .data_atop_i        (  '0                         ),
+    .data_atop_i        (  s_core_bus.atop            ),
     .data_wdata_i       (  s_core_bus.wdata           ),
     .data_be_i          (  s_core_bus.be              ),
     .data_gnt_o         (  s_core_bus.gnt             ),

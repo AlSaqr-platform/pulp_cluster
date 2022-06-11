@@ -753,8 +753,7 @@ module pulp_cluster
     .rst_ni                 ( rst_ni                              ),
 
     .core_tcdm_slave        ( s_core_xbar_bus                     ),
-    // .core_tcdm_slave_atop   ( s_core_xbar_bus_atop                ),
-    .core_tcdm_slave_atop   (               '0                    ),
+    .core_tcdm_slave_atop   ( s_core_xbar_bus_atop                ),
     .ext_slave              ( s_ext_xbar_bus                      ),
     .ext_slave_atop         ( s_ext_xbar_bus_atop                 ),
     .dma_slave              ( s_dma_xbar_bus                      ),
@@ -762,13 +761,11 @@ module pulp_cluster
     .tcdm_sram_master       ( s_tcdm_bus_sram                     ),
 
     .core_periph_slave      ( s_core_periph_tryx                  ),
-    // .core_periph_slave_atop ( s_core_periph_bus_atop              ),
-    .core_periph_slave_atop (               '0                    ),
+    .core_periph_slave_atop ( s_core_periph_bus_atop              ),
     .core_periph_slave_addrext ( s_core_periph_bus_addrext        ),
     .mperiph_slave          ( s_mperiph_xbar_bus[NB_MPERIPHS-1:0] ),
     .speriph_master         ( s_xbar_speriph_bus                  ),
-    // .speriph_master_atop    ( s_xbar_speriph_atop                 ),
-    .speriph_master_atop    (            /* unused */             ),
+    .speriph_master_atop    ( s_xbar_speriph_atop                 ),
 
     .TCDM_arb_policy_i      ( s_TCDM_arb_policy                   )
   );
@@ -948,14 +945,12 @@ module pulp_cluster
         .unaligned_o              ( core_unaligned[i]         ),
         .addrext_i                ( tryx_req[i].addrext       ),
         .tcdm_data_master         ( s_core_xbar_bus[i]        ),
-        // .tcdm_data_master_atop    ( s_core_xbar_bus_atop[i]   ),
-        .tcdm_data_master_atop    (    /* unused */           ),
+        .tcdm_data_master_atop    ( s_core_xbar_bus_atop[i]   ),
         .dma_ctrl_master          ( s_core_dmactrl_bus[i]     ),
         .eu_ctrl_master           ( s_core_euctrl_bus[i]      ),
         .tlb_miss_ctrl_master     ( s_core_tlbmissctrl_bus[i] ),
         .periph_data_master       ( s_core_periph_bus[i]      ),
-        // .periph_data_master_atop  ( s_core_periph_bus_atop[i] ),
-        .periph_data_master_atop  (        /* unused */       )
+        .periph_data_master_atop  ( s_core_periph_bus_atop[i] )
         // .apu_master               ( apu_cluster_bus[i]        )
 `ifdef SHARED_FPU_CLUSTER
         ,        
