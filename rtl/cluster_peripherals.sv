@@ -198,8 +198,6 @@ module cluster_peripherals
     .dma_events_i           ( s_dma_events           ),
     .timer_events_i         ( s_timer_events         ),
     .cluster_events_i       ( s_cluster_events       ),
-    .dbg_req_i              ( dbg_req_i              ),
-    .core_dbg_req_o         ( dbg_req_o              ),
     .core_irq_id_o          ( irq_id_o               ),
     .core_irq_ack_id_i      ( irq_ack_id_i           ),
     .core_irq_req_o         ( irq_req_o              ),

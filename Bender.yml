@@ -6,7 +6,7 @@ dependencies:
   axi2per:              { git: "https://github.com/AlSaqr-platform/axi2per.git"         , rev: "alsaqr_cluster"                           }
   per2axi:              { git: "https://github.com/AlSaqr-platform/per2axi.git"         , rev: "alsaqr_cluster"                           }
   cluster_interconnect: { path: "rtl/dependencies/cluster_interconnect"                                                                   }
-  event_unit_flex:      { git: "https://github.com/AlSaqr-platform/event_unit_flex.git" , rev: 1.4.1                                      }
+  event_unit_flex:      { git: "https://github.com/AlSaqr-platform/event_unit_flex.git" , rev: "d0cb7e92bd23ad28701a765d413bbeeb9e9cd514" }
   cluster_dma:          { git: "https://github.com/AlSaqr-platform/cluster-dma.git"     , rev: master                                     }
   hier-icache:          { git: "https://github.com/pulp-platform/hier-icache.git"       , rev: "c82025995fbb18e045bb14ad2e94b35734994956" }
   icache_private:       { git: "https://github.com/AlSaqr-platform/icache_private.git"  , rev: "84436443d3a2dbad0b94a85c2c5cc8915632fd26" }
