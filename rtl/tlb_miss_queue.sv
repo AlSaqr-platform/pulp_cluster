@@ -200,8 +200,9 @@ module single_prod_multiple_cons #(
     cons_valid_o = '0;
     prod_ready_o = 1'b0;
     prod_valid_d = prod_valid_q;
+    state_d = state_q;
 
-    unique case (state_q)
+    case (state_q)
       Ready: begin
         if (arb_req) begin
           cons_gnt_o[arb_idx] = 1'b1;
@@ -233,7 +234,6 @@ module single_prod_multiple_cons #(
         end
       end
 
-      default: state_d = Ready;
     endcase
   end
 
