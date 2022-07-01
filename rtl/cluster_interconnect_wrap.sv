@@ -185,70 +185,79 @@ module cluster_interconnect_wrap
   end
 
   for (genvar i = 0; i < NB_TCDM_BANKS; i++) begin : gen_amo_shim
+     assign tcdm_sram_master[i].req  = s_tcdm_bus_amo_shim_req[i];
+     assign tcdm_sram_master[i].add  = s_tcdm_bus_amo_shim_add[i];
+     assign tcdm_sram_master[i].wen  = s_tcdm_bus_amo_shim_wen[i];
+     assign tcdm_sram_master[i].wdata = iconn_oup_wdata[i].data;     
+     assign tcdm_sram_master[i].be = s_tcdm_bus_amo_shim_be[i];
+     
+     assign iconn_oup_rdata[i].data =  tcdm_sram_master[i].rdata;
+     assign s_tcdm_bus_amo_shim_gnt[i] = tcdm_sram_master[i].req;
+     
     // Map ATOPs by RI5CYs to AMOs.
-    logic [DATA_WIDTH-1:0] data;
-    logic [5:0] atop;
-    logic [3:0] amo;
-    assign atop = iconn_oup_wdata[i].atop;
-    always_comb begin
-      amo = '0;
-      data = iconn_oup_wdata[i].data;
-      if (atop[5]) begin
-        unique casez (atop[4:0])
-          cluster_riscv_defines::AMO_ADD:   amo = 4'h2;
-          cluster_riscv_defines::AMO_SWAP:  amo = 4'h1;
-          cluster_riscv_defines::AMO_LR:    `ifndef TARGET_SYNTHESIS $error("Unsupported LR on L1!") `endif;
-          cluster_riscv_defines::AMO_SC:    `ifndef TARGET_SYNTHESIS $error("Unsupported SC on L1!") `endif;
-          default: begin
-            `ifndef TARGET_SYNTHESIS
-              assert (atop[1:0] == '0) else $error("Illegal AMO!");
-            `endif
-            unique case (atop[4:2])
-              cluster_riscv_defines::AMO_XOR[4:2]:  amo = 4'h5;
-              cluster_riscv_defines::AMO_OR[4:2]:   amo = 4'h4;
-              cluster_riscv_defines::AMO_AND[4:2]:  amo = 4'h3;
-              cluster_riscv_defines::AMO_MIN[4:2]:  amo = 4'h8;
-              cluster_riscv_defines::AMO_MAX[4:2]:  amo = 4'h6;
-              cluster_riscv_defines::AMO_MINU[4:2]: amo = 4'h9;
-              cluster_riscv_defines::AMO_MAXU[4:2]: amo = 4'h7;
-            endcase
-          end
-        endcase
-      end else begin
-        amo = 4'h0; // AMONone
-      end
-    end
-    logic write_enable;
-    logic [ADDR_MEM_WIDTH+2-1:0] addr;
-    amo_shim_cluster #(
-      .AddrMemWidth (ADDR_MEM_WIDTH+2),
-      .DataWidth    (DATA_WIDTH)
-    ) i_amo_shim (
-      .clk_i,
-      .rst_ni,
-
-      .in_req_i     (s_tcdm_bus_amo_shim_req[i]),
-      .in_gnt_o     (s_tcdm_bus_amo_shim_gnt[i]),
-      .in_add_i     ({s_tcdm_bus_amo_shim_add[i], 2'b00}),
-      .in_amo_i     (amo),
-      .in_wen_i     (~s_tcdm_bus_amo_shim_wen[i]), // 0 = write, 1 = read
-      .in_wdata_i   (data),
-      .in_be_i      (s_tcdm_bus_amo_shim_be[i]),
-      .in_rdata_o   (iconn_oup_rdata[i].data),
-
-      .out_req_o    (tcdm_sram_master[i].req),
-      .out_add_o    (addr),
-      .out_wen_o    (write_enable),
-      .out_wdata_o  (tcdm_sram_master[i].wdata),
-      .out_be_o     (tcdm_sram_master[i].be),
-      .out_rdata_i  (tcdm_sram_master[i].rdata)
-    );
-    assign iconn_oup_rdata[i].atop = '0;
-    always_comb begin
-      tcdm_sram_master[i].add = '0;
-      tcdm_sram_master[i].add[ADDR_MEM_WIDTH-1:0] = addr[ADDR_MEM_WIDTH+2-1:2];
-    end
-    assign tcdm_sram_master[i].wen = ~write_enable;
+    //logic [DATA_WIDTH-1:0] data;
+    //logic [5:0] atop;
+    //logic [3:0] amo;
+    //assign atop = iconn_oup_wdata[i].atop;
+    //always_comb begin
+    //  amo = '0;
+    //  data = iconn_oup_wdata[i].data;
+    //  if (atop[5]) begin
+    //    unique casez (atop[4:0])
+    //      cluster_riscv_defines::AMO_ADD:   amo = 4'h2;
+    //      cluster_riscv_defines::AMO_SWAP:  amo = 4'h1;
+    //      cluster_riscv_defines::AMO_LR:    `ifndef TARGET_SYNTHESIS $error("Unsupported LR on L1!") `endif;
+    //      cluster_riscv_defines::AMO_SC:    `ifndef TARGET_SYNTHESIS $error("Unsupported SC on L1!") `endif;
+    //      default: begin
+    //        `ifndef TARGET_SYNTHESIS
+    //          assert (atop[1:0] == '0) else $error("Illegal AMO!");
+    //        `endif
+    //        unique case (atop[4:2])
+    //          cluster_riscv_defines::AMO_XOR[4:2]:  amo = 4'h5;
+    //          cluster_riscv_defines::AMO_OR[4:2]:   amo = 4'h4;
+    //          cluster_riscv_defines::AMO_AND[4:2]:  amo = 4'h3;
+    //          cluster_riscv_defines::AMO_MIN[4:2]:  amo = 4'h8;
+    //          cluster_riscv_defines::AMO_MAX[4:2]:  amo = 4'h6;
+    //          cluster_riscv_defines::AMO_MINU[4:2]: amo = 4'h9;
+    //          cluster_riscv_defines::AMO_MAXU[4:2]: amo = 4'h7;
+    //        endcase
+    //      end
+    //    endcase
+    //  end else begin
+    //    amo = 4'h0; // AMONone
+    //  end
+    //end
+    //logic write_enable;
+    //logic [ADDR_MEM_WIDTH+2-1:0] addr;
+    //amo_shim_cluster #(
+    //  .AddrMemWidth (ADDR_MEM_WIDTH+2),
+    //  .DataWidth    (DATA_WIDTH)
+    //) i_amo_shim (
+    //  .clk_i,
+    //  .rst_ni,
+    //
+    //  .in_req_i     (s_tcdm_bus_amo_shim_req[i]),
+    //  .in_gnt_o     (s_tcdm_bus_amo_shim_gnt[i]),
+    //  .in_add_i     ({s_tcdm_bus_amo_shim_add[i], 2'b00}),
+    //  .in_amo_i     (amo),
+    //  .in_wen_i     (~s_tcdm_bus_amo_shim_wen[i]), // 0 = write, 1 = read
+    //  .in_wdata_i   (data),
+    //  .in_be_i      (s_tcdm_bus_amo_shim_be[i]),
+    //  .in_rdata_o   (iconn_oup_rdata[i].data),
+    //
+    //  .out_req_o    (tcdm_sram_master[i].req),
+    //  .out_add_o    (addr),
+    //  .out_wen_o    (write_enable),
+    //  .out_wdata_o  (tcdm_sram_master[i].wdata),
+    //  .out_be_o     (tcdm_sram_master[i].be),
+    //  .out_rdata_i  (tcdm_sram_master[i].rdata)
+    //);
+    //assign iconn_oup_rdata[i].atop = '0;
+    //always_comb begin
+    //  tcdm_sram_master[i].add = '0;
+    //  tcdm_sram_master[i].add[ADDR_MEM_WIDTH-1:0] = addr[ADDR_MEM_WIDTH+2-1:2];
+    //end
+    //assign tcdm_sram_master[i].wen = ~write_enable;
   end
 
   localparam int unsigned PE_XBAR_N_INPS = NB_CORES + NB_MPERIPHS;
