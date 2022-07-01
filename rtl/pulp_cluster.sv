@@ -565,7 +565,7 @@ module pulp_cluster
     .AXI_USER_WIDTH       ( AXI_USER_WIDTH     )
   ) cluster_bus_wrap_i    (
     .clk_i                ( clk_cluster        ),
-    .rst_ni               ( rst_ni             ),
+    .rst_ni               ( s_rst_n            ),
     .test_en_i            ( test_mode_i        ),
     .cluster_id_i         ( cluster_id_i       ),
     .data_slave           ( s_core_ext_bus     ),
@@ -616,7 +616,7 @@ module pulp_cluster
     .axi_resp_t (axi_resp_t)
   ) i_axi_to_mem_cut (
     .clk_i      (clk_cluster),
-    .rst_ni,
+    .rst_ni     (s_rst_n),
     .slv_req_i  (ext_tcdm_req),
     .slv_resp_o (ext_tcdm_resp),
     .mst_req_o  (ext_tcdm_req_buf),
@@ -632,7 +632,7 @@ module pulp_cluster
     .NumBanks   ( NB_EXT2MEM             )
   ) i_axi2mem (
     .clk_i        ( clk_cluster           ),
-    .rst_ni       ( rst_ni                ),
+    .rst_ni       ( s_rst_n               ),
     .busy_o       ( s_axi2mem_busy        ),
     .axi_req_i    ( ext_tcdm_req_buf      ),
     .axi_resp_o   ( ext_tcdm_resp_buf     ),
@@ -664,7 +664,7 @@ module pulp_cluster
     .AXI_USER_WIDTH ( AXI_USER_WIDTH     )
   ) axi2per_wrap_i (
     .clk_i                ( clk_cluster       ),
-    .rst_ni               ( rst_ni            ),
+    .rst_ni               ( s_rst_n           ),
     .test_en_i            ( test_mode_i       ),
     .cluster_id_i         ( cluster_id_i      ),
     .axi_slave            ( s_ext_mperiph_bus ),
@@ -678,7 +678,7 @@ module pulp_cluster
     .ADDR_OFFSET ( 20 )
   ) per_demux_wrap_i (
     .clk_i   ( clk_cluster         ),
-    .rst_ni  ( rst_ni              ),
+    .rst_ni  ( s_rst_n             ),
     .slave   ( s_mperiph_bus       ),
     .masters ( s_mperiph_demux_bus )
   );
@@ -696,7 +696,7 @@ module pulp_cluster
     .tryx_req_t     ( tryx_req_t           )
   ) per2axi_wrap_i (
     .clk_i                ( clk_cluster                       ),
-    .rst_ni               ( rst_ni                            ),
+    .rst_ni               ( s_rst_n                           ),
     .test_en_i            ( test_mode_i                       ),
     .periph_slave         ( s_xbar_speriph_bus[SPER_EXT_ID]   ),
     .periph_slave_atop_i  ( s_xbar_speriph_atop[SPER_EXT_ID]  ),
@@ -714,7 +714,7 @@ module pulp_cluster
     .tryx_req_t         ( tryx_req_t     )
   ) tryx_ctrl_i (
     .clk_i              ( clk_cluster        ),
-    .rst_ni             ( rst_ni             ),
+    .rst_ni             ( s_rst_n            ),
     .tryx_req_o         ( tryx_req           ),
     .axi_xresp_decerr_i ( tryx_xresp_decerr  ),
     .axi_xresp_slverr_i ( tryx_xresp_slverr  ),
@@ -750,7 +750,7 @@ module pulp_cluster
     .CLUSTER_ALIAS_BASE ( CLUSTER_ALIAS_BASE )
   ) cluster_interconnect_wrap_i (
     .clk_i                  ( clk_cluster                         ),
-    .rst_ni                 ( rst_ni                              ),
+    .rst_ni                 ( s_rst_n                             ),
 
     .core_tcdm_slave        ( s_core_xbar_bus                     ),
     // .core_tcdm_slave_atop   ( s_core_xbar_bus_atop                ),
@@ -786,7 +786,7 @@ module pulp_cluster
     .NUM_STREAMS        ( NB_DMA_STREAMS     )
   ) dmac_wrap_i (
     .clk_i          ( clk_cluster        ),
-    .rst_ni         ( rst_ni             ),
+    .rst_ni         ( s_rst_n            ),
     .test_mode_i    ( test_mode_i        ),
     .ctrl_slave     ( s_core_dmactrl_bus ),
     .pe_ctrl_slave  ( s_periph_dma_bus   ),
@@ -804,7 +804,7 @@ module pulp_cluster
     .NUM_ENTRIES  (NB_CORES/2)
   ) i_tlb_miss_queue (
     .clk_i        ( clk_cluster             ),
-    .rst_ni,
+    .rst_ni       ( s_rst_n                 ),
     .test_mode_i,
     .ctrl_slave   ( s_core_tlbmissctrl_bus  )
   );
@@ -812,7 +812,7 @@ module pulp_cluster
 
   sync_wedge i_host_mailbox_irq_sync (
               .clk_i    ( clk_cluster        ),
-              .rst_ni   ( rst_ni             ),
+              .rst_ni   ( s_rst_n            ),
               .en_i     ( 1'b1               ),
               .serial_i ( host_mailbox_irq_i ),
               .r_edge_o ( s_host_mailbox_irq ),
@@ -832,7 +832,7 @@ module pulp_cluster
     .EVNT_WIDTH     ( EVNT_WIDTH     )
   ) cluster_peripherals_i (
     .clk_i                  ( clk_cluster                        ),
-    .rst_ni                 ( rst_ni                             ),
+    .rst_ni                 ( s_rst_n                            ),
     .ref_clk_i              ( ref_clk_i                          ),
     .test_mode_i            ( test_mode_i                        ),
     .busy_o                 ( s_cluster_periphs_busy             ),
@@ -1445,7 +1445,7 @@ module pulp_cluster
       .NumPorts   ( 1                         )  // specify explicitly for aegis!
     ) i_tc_sram   (
       .clk_i      ( clk_cluster               ),
-      .rst_ni     ( rst_ni                    ),
+      .rst_ni     ( s_rst_n                   ),
       .req_i      ( s_tcdm_bus_sram[i].req    ),
       .addr_i     ( addr                      ),
       .we_i       ( ~s_tcdm_bus_sram[i].wen   ),
