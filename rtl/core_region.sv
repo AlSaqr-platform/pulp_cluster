@@ -142,7 +142,7 @@ module core_region import apu_package::*;
   XBAR_CLUSTER_DEMUX_BUS s_core_bus();         // Internal interface between CORE       <--> DEMUX
   XBAR_PERIPH_BUS        periph_demux_bus();   // Internal interface between CORE_DEMUX <--> PERIPHERAL DEMUX
 
-  logic [4:0]      perf_counters;
+  logic [9:0]      perf_counters;
   logic            clk_int;
 
   // clock gate of the core_region less the core itself
@@ -178,7 +178,7 @@ module core_region import apu_package::*;
 
   riscv_core #(
     .INSTR_RDATA_WIDTH   ( INSTR_RDATA_WIDTH ),
-    .N_EXT_PERF_COUNTERS ( 5                 ),
+    .N_EXT_PERF_COUNTERS ( 10                ),
     .Zfinx               ( 1                 ),
     .PULP_SECURE         ( 0                 ),
     .FPU                 ( FPU               ),
@@ -269,7 +269,12 @@ module core_region import apu_package::*;
 
   // Performance Counters
   assign perf_counters[4] = tcdm_data_master.req & (~tcdm_data_master.gnt);  // Cycles lost due to contention
-
+  assign perf_counters[5] = s_core_bus.req & (~s_core_bus.gnt); // Cycles lost due to whatever
+  assign perf_counters[6] = periph_data_master.req & (~periph_data_master.gnt);  
+  assign perf_counters[7] = tcdm_data_master.req;
+  assign perf_counters[8] = s_core_bus.req; 
+  assign perf_counters[9] = periph_data_master.req ;  
+   
   // demuxes to TCDM & memory hierarchy
   core_demux #(
     .ADDR_WIDTH             ( 32                      ),
