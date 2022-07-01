@@ -49,7 +49,7 @@ module cluster_bus_wrap
   AXI_BUS.Master    tcdm_master,
   AXI_BUS.Master    periph_master,
   AXI_BUS.Master    ext_master, 
-  AXI_BUS.Master    tlb_cfg_master
+  AXI_BUS.Master    axilite_master
 );
 
 
@@ -93,7 +93,7 @@ module cluster_bus_wrap
   // assign here your axi masters
   `AXI_ASSIGN(tcdm_master   , axi_masters[0])
   `AXI_ASSIGN(periph_master , axi_masters[1])
-  `AXI_ASSIGN(tlb_cfg_master, axi_masters[2])
+  `AXI_ASSIGN(axilite_master, axi_masters[2])
   `AXI_ASSIGN(ext_master    , axi_masters[3])
   
   // address map

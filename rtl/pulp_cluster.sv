@@ -29,7 +29,7 @@ import hci_package::*;
 module pulp_cluster
 #(
   // cluster parameters
-  parameter CORE_TYPE_CL            = 0, // 0 for RISCY, 1 for IBEX RV32IMC (formerly ZERORISCY), 2 for IBEX RV32EC (formerly MICRORISCY)
+  parameter CORE_TYPE_CL       = 0, // 0 for RISCY, 1 for IBEX RV32IMC (formerly ZERORISCY), 2 for IBEX RV32EC (formerly MICRORISCY)
   parameter NB_CORES           = 8,
   parameter NB_HWPE_PORTS      = 9,
   // number of DMA TCDM plugs, NOT number of DMA slave peripherals!
@@ -40,11 +40,11 @@ module pulp_cluster
   
   parameter CLUSTER_ALIAS_BASE      = 12'h000,
   
-  parameter TCDM_SIZE               = 64*1024,                 // [B], must be 2**N
+  parameter TCDM_SIZE               = 256*1024,                // [B], must be 2**N
   parameter NB_TCDM_BANKS           = 16,                      // must be 2**N
   parameter TCDM_BANK_SIZE          = TCDM_SIZE/NB_TCDM_BANKS, // [B]
   parameter TCDM_NUM_ROWS           = TCDM_BANK_SIZE/4,        // [words]
-  parameter HWPE_PRESENT            = 1,                       // set to 1 if HW Processing Engines are present in the cluster
+  parameter HWPE_PRESENT            = 0,                       // set to 1 if HW Processing Engines are present in the cluster
   parameter USE_HETEROGENEOUS_INTERCONNECT = 1,                // set to 1 to connect HWPEs via heterogeneous interconnect; to 0 for larger LIC
 
   // I$ parameters
@@ -113,8 +113,8 @@ module pulp_cluster
   parameter AXI_DATA_OUT_WIDTH      = 64,
   parameter AXI_DATA_IN_WIDTH       = 64,
   parameter AXI_USER_WIDTH          = 1,
-  parameter AXI_ID_IN_WIDTH         = 4,
-  parameter AXI_ID_OUT_WIDTH        = 6, 
+  parameter AXI_ID_IN_WIDTH         = 3,
+  parameter AXI_ID_OUT_WIDTH        = 5, 
   parameter AXI_STRB_WIDTH_IN       = AXI_DATA_OUT_WIDTH/8,
   parameter AXI_STRB_WIDTH_OUT      = AXI_DATA_IN_WIDTH/8,
   // CLUSTER TO SOC CDC AXI PARAMETER
@@ -258,7 +258,6 @@ module pulp_cluster
   input logic [LOG_DEPTH:0]                      async_cfg_master_b_wptr_i,
   input logic [ASYNC_C2S_B_DATA_WIDTH-1:0]       async_cfg_master_b_data_i,
   output logic [LOG_DEPTH:0]                     async_cfg_master_b_rptr_o
-  // AXI_LITE_ASYNC_GRAY.Master                     async_tlb_cfg_master
 );
 
   //Ensure that the input AXI ID width is big enough to accomodate the accomodate the IDs of internal wiring
@@ -555,7 +554,7 @@ module pulp_cluster
     .AXI_DATA_WIDTH ( AXI_DATA_OUT_WIDTH ),
     .AXI_ID_WIDTH   ( AXI_ID_OUT_WIDTH   ),
     .AXI_USER_WIDTH ( AXI_USER_WIDTH     )
-  )  s_tlb_cfg_bus();
+  )  s_axilite_bus();
 
   /* reset generator */
   rstgen rstgen_i (
@@ -593,7 +592,7 @@ module pulp_cluster
     .tcdm_master    ( s_ext_tcdm_bus    ),
     .periph_master  ( s_ext_mperiph_bus ),
     .ext_master     ( s_data_master     ),
-    .tlb_cfg_master ( s_tlb_cfg_bus     )
+    .axilite_master ( s_axilite_bus     )
   );
 
   cl_axi2mem_wrap #(
@@ -1462,8 +1461,8 @@ module pulp_cluster
     c2s_req_t   cfg_req ;
     c2s_resp_t  cfg_resp;   
     
-    `AXI_ASSIGN_TO_REQ    ( cfg_req      , s_tlb_cfg_bus )
-    `AXI_ASSIGN_FROM_RESP ( s_tlb_cfg_bus, cfg_resp      )
+    `AXI_ASSIGN_TO_REQ    ( cfg_req      , s_axilite_bus )
+    `AXI_ASSIGN_FROM_RESP ( s_axilite_bus, cfg_resp      )
   
     axi_cdc_src #(
        .aw_chan_t         ( c2s_aw_chan_t ),
