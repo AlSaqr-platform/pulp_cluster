@@ -162,7 +162,8 @@ module pulp_cluster
   output logic                                   eoc_o,
   
   output logic                                   busy_o,
- 
+
+  input  logic                                   host_mailbox_irq_i,
  
   input logic                                    dma_pe_evt_ack_i,
   output logic                                   dma_pe_evt_valid_o,
@@ -799,7 +800,8 @@ module pulp_cluster
 
     .dma_fc_event_i         ( s_dma_fc_event                     ),
     .dma_fc_irq_i           (                                    ),
-
+    .host_mailbox_irq_i     ( host_mailbox_irq_i                 ),
+                           
     .soc_periph_evt_ready_o ( s_events_ready                     ),
     .soc_periph_evt_valid_i ( s_events_valid                     ),
     .soc_periph_evt_data_i  ( s_events_data                      ),
