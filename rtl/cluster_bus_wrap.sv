@@ -138,6 +138,7 @@ module cluster_bus_wrap
                                                     FallThrough: 1'b0,       //Use the reccomended default config 
                                                     LatencyMode: axi_pkg::NO_LATENCY, // CUT_ALL_AX | axi_pkg::DemuxW,
                                                     AxiIdWidthSlvPorts: AXI_ID_IN_WIDTH,
+                                                    PipelineStages: 32'd0,
                                                     AxiIdUsedSlvPorts: AXI_ID_IN_WIDTH,
                                                     UniqueIds: 1'b0,
                                                     AxiAddrWidth: AXI_ADDR_WIDTH,
