@@ -142,7 +142,8 @@ module cluster_bus_wrap
                                                     UniqueIds: 1'b0,
                                                     AxiAddrWidth: AXI_ADDR_WIDTH,
                                                     AxiDataWidth: AXI_DATA_WIDTH,
-                                                    NoAddrRules: N_RULES
+                                                    NoAddrRules: N_RULES,
+                                                    PipelineStages: 0
                                                     };
 
 
