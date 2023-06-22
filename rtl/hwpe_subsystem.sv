@@ -19,8 +19,7 @@ module hwpe_subsystem
 #(
   parameter N_CORES       = 8,
   parameter N_MASTER_PORT = 9,
-  parameter ID_WIDTH      = 8,
-  parameter USE_RBE       = 0
+  parameter ID_WIDTH      = 8
 )
 (
   input  logic                    clk,
@@ -40,42 +39,21 @@ module hwpe_subsystem
     .clk ( clk )
   );
 
-  generate
-    if(USE_RBE) begin : rbe_gen
-      rbe_top #(
-        .ID      ( ID_WIDTH         ),
-        .N_CORES ( N_CORES          ),
-        .BW      ( N_MASTER_PORT*32 )
-      ) hwpe_top_wrap_i (
-        .clk_i       ( clk              ),
-        .rst_ni      ( rst_n            ),
-        .test_mode_i ( test_mode        ),
-        .evt_o       ( evt_o            ),
-        .tcdm        ( hwpe_xbar_master ),
-        .hci_ctrl_o  (                  ),
-        .periph      ( periph           )
-      );
-      assign busy_o = 1'b1;
-    end
-    else begin : datamover_gen
-      datamover_top #(
-        .ID      ( ID_WIDTH         ),
-        .N_CORES ( N_CORES          ),
-        .BW      ( N_MASTER_PORT*32 )
-      ) hwpe_top_wrap_i (
-        .clk_i       ( clk              ),
-        .rst_ni      ( rst_n            ),
-        .test_mode_i ( test_mode        ),
-        .evt_o       ( evt_o            ),
-        .tcdm        ( hwpe_xbar_master ),
-        .periph      ( periph           )
-      );
-      assign busy_o = 1'b1;
-    end
-  endgenerate
+  redmule_top   #(
+    .ID_WIDTH    ( ID_WIDTH         ),
+    .N_CORES     ( N_CORES          ),
+    .DW          ( N_MASTER_PORT*32 )
+  ) i_redmule    (
+    .clk_i       ( clk              ),
+    .rst_ni      ( rst_n            ),
+    .test_mode_i ( test_mode        ),
+    .busy_o      ( busy_o           ),
+    .evt_o       ( evt_o            ),
+    .tcdm        ( hwpe_xbar_master ),
+    .periph      ( periph           )
+  );
 
-  always_comb
-  begin
+  always_comb begin
     periph.req  = hwpe_cfg_slave.req;
     periph.add  = hwpe_cfg_slave.add;
     periph.wen  = hwpe_cfg_slave.wen;
