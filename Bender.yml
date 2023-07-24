@@ -1,6 +1,6 @@
 package:
   name: pulp_cluster
-  authors: 
+  authors:
     - "Pirmin Vogel <vogelpi@lowrisc.org>"
     - "Angelo Garofalo <angelo.garofalo@unibo.it>"
     - "Francesco Conti <f.conti@unibo.it>"
@@ -19,7 +19,7 @@ dependencies:
   icache_private:         { git: "https://github.com/AlSaqr-platform/icache_private.git", rev: "84436443d3a2dbad0b94a85c2c5cc8915632fd26" }
   cluster_peripherals:    { git: "https://github.com/pulp-platform/cluster_peripherals.git", version: 2.1.0 }
   fpu_interco:            { git: "https://github.com/pulp-platform/fpu_interco.git", rev: yt/alsaqr }
-  axi:                    { git: "https://github.com/pulp-platform/axi.git", version: 0.29.1 } 
+  axi:                    { git: "https://github.com/pulp-platform/axi.git", rev: "29fd76fb438c91c692108c1f93ab221931653c5d" }
   timer_unit:             { git: "https://github.com/pulp-platform/timer_unit.git", version: 1.0.2 }
   common_cells:           { git: "https://github.com/pulp-platform/common_cells.git", version: 1.13.1 }
   tech_cells_generic:     { git: "https://github.com/pulp-platform/tech_cells_generic.git", version: 0.2.4 }
