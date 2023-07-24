@@ -101,7 +101,7 @@ module pulp_cluster
   parameter REMAP_ADDRESS           = 1,  // for cluster virtualization
 
   // CDC PARAMETER
-  parameter SYNC_STAGES             = 2,
+  parameter SYNC_STAGES             = 3,
 
   parameter LOG_DEPTH               = 3,
   localparam ASYNC_EVENT_DATA_WIDTH = (2**LOG_DEPTH)*EVNT_WIDTH,
