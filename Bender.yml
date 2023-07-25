@@ -18,8 +18,8 @@ dependencies:
   icache_mp_128_pf:       { git: "https://github.com/pulp-platform/icache_mp_128_pf.git", rev: "6f2e54102001230db9c82432bf9e011842419a48" }
   icache_private:         { git: "https://github.com/AlSaqr-platform/icache_private.git", rev: "84436443d3a2dbad0b94a85c2c5cc8915632fd26" }
   cluster_peripherals:    { git: "https://github.com/pulp-platform/cluster_peripherals.git", version: 2.1.0 }
-  fpu_interco:            { git: "https://github.com/pulp-platform/fpu_interco.git", rev: yt/alsaqr }
-  axi:                    { git: "https://github.com/pulp-platform/axi.git", rev: "29fd76fb438c91c692108c1f93ab221931653c5d" }
+  fpu_interco:            { git: "https://github.com/pulp-platform/fpu_interco.git", rev: "2f4a1b594bc4ff3b68d55e569fbe912ac121924f" }
+  axi:                    { git: "https://github.com/pulp-platform/axi.git", version: 0.39.1-beta }
   timer_unit:             { git: "https://github.com/pulp-platform/timer_unit.git", version: 1.0.2 }
   common_cells:           { git: "https://github.com/pulp-platform/common_cells.git", version: 1.13.1 }
   tech_cells_generic:     { git: "https://github.com/pulp-platform/tech_cells_generic.git", version: 0.2.4 }
