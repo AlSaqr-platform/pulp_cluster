@@ -14,7 +14,7 @@
  */
 
 `define NB_SLAVE  4
-`define NB_MASTER 3
+`define NB_MASTER 4
 
 `define NB_REGION 1
 
