@@ -46,7 +46,7 @@ module pulp_cluster_tb;
       .rst_no ( s_rstn )
   );
    
-  localparam AxiAw  = 32;
+  localparam AxiAw  = 64;
   localparam AxiDw  = 64;
   localparam AxiIw  = 6;
   localparam NMst   = 2;
@@ -139,8 +139,8 @@ module pulp_cluster_tb;
     .DataWidth ( AxiDw        ),
     .IdWidth   ( AxiIwMst     ),
     .UserWidth ( AxiUw        ),
-    .req_t     ( axi_m_req_t  ),
-    .rsp_t     ( axi_m_resp_t ),
+    .axi_req_t     ( axi_m_req_t  ),
+    .axi_rsp_t     ( axi_m_resp_t ),
     .ApplDelay ( SYS_TA       ),
     .AcqDelay  ( SYS_TT       )    
   ) sim_mem (
@@ -194,6 +194,7 @@ module pulp_cluster_tb;
     MaxSlvTrans:        8,
     FallThrough:        1'b1,
     LatencyMode:        axi_pkg::NO_LATENCY,
+    PipelineStages:     0,
     AxiIdWidthSlvPorts: AxiIw,
     AxiIdUsedSlvPorts:  AxiIw,
     UniqueIds:          1'b1,
@@ -280,8 +281,8 @@ module pulp_cluster_tb;
     .CLUST_SHARED_FP              ( `CLUST_SHARED_FP         ),
     .CLUST_SHARED_FP_DIVSQRT      ( `CLUST_SHARED_FP_DIVSQRT ),
     .AXI_ADDR_WIDTH               ( AxiAw                    ),
-    .AXI_DATA_S2C_WIDTH           ( AxiDw                    ),
-    .AXI_DATA_C2S_WIDTH           ( AxiDw                    ),
+    .AXI_DATA_OUT_WIDTH           ( AxiDw                    ),
+    .AXI_DATA_IN_WIDTH            ( AxiDw                    ),
     .AXI_USER_WIDTH               ( AxiUw                    ),
     .AXI_ID_IN_WIDTH              ( AxiIw-2                  ),
     .AXI_ID_OUT_WIDTH             ( AxiIw                    ),
