@@ -107,7 +107,7 @@ run:
 test-rt-par-bare: pulp-runtime regression-tests
 	source env/env.sh; \
 	cd regression-tests && $(bwruntest) --proc-verbose -v \
-		-t 3600 --yaml --max-procs 2 \
+		-t 3600 --yaml \
 		-o runtime-parallel.xml parallel-bare-tests.yaml
 
 
@@ -116,5 +116,5 @@ test-rt-par-bare: pulp-runtime regression-tests
 test-rt-mchan: pulp-runtime regression-tests
 	source env/env.sh; \
 	cd regression-tests && $(bwruntest) --proc-verbose -v \
-		-t 3600 --yaml --max-procs 2 \
+		-t 3600 --yaml \
 		-o runtime-mchan.xml pulp_cluster-mchan-tests.yaml
