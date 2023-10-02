@@ -1,6 +1,10 @@
+# Copyright 2023 ETH Zurich and University of Bologna
+# Solderpad Hardware License, Version 0.51, see LICENSE for details.
+# SPDX-License-Identifier: SHL-0.51
+
 package:
   name: pulp_cluster
-  authors: 
+  authors:
     - "Pirmin Vogel <vogelpi@lowrisc.org>"
     - "Angelo Garofalo <angelo.garofalo@unibo.it>"
     - "Francesco Conti <f.conti@unibo.it>"
@@ -18,16 +22,17 @@ dependencies:
   icache_mp_128_pf:       { git: "https://github.com/pulp-platform/icache_mp_128_pf.git", rev: "6f2e54102001230db9c82432bf9e011842419a48" }
   icache_private:         { git: "https://github.com/AlSaqr-platform/icache_private.git", rev: "84436443d3a2dbad0b94a85c2c5cc8915632fd26" }
   cluster_peripherals:    { git: "https://github.com/pulp-platform/cluster_peripherals.git", version: 2.1.0 }
-  fpu_interco:            { git: "https://github.com/AlSaqr-platform/fpu_interco.git", rev: "35b582ee6683b65465d34b44ef289a9832dfd516" }
-  axi:                    { git: "https://github.com/pulp-platform/axi.git", rev: "a25b415958e83e232096aa3863da56887abd5991" } 
+  fpu_interco:            { git: "https://github.com/AlSaqr-platform/fpu_interco.git", rev: "8abf4aeef3bcc43e2db553f0c6ed3e733a270218" } # branch: master
+  axi:                    { git: "https://github.com/pulp-platform/axi.git", version: 0.39.1-beta }
   timer_unit:             { git: "https://github.com/pulp-platform/timer_unit.git", version: 1.0.2 }
   common_cells:           { git: "https://github.com/pulp-platform/common_cells.git", version: 1.13.1 }
   tech_cells_generic:     { git: "https://github.com/pulp-platform/tech_cells_generic.git", version: 0.2.4 }
-  cv32e40p:               { git: "https://github.com/pulp-platform/cv32e40p.git", rev: "shaheen-v0.0"} # To be updated to openhwgroup repository
-  ibex:                   { git: "https://github.com/lowRISC/ibex.git", rev: "pulpissimo-v6.1.1" }
+  cv32e40p:               { git: "https://github.com/pulp-platform/cv32e40p.git", rev: "2f3f137117c2abcc86d04df267866fe0e0fcd39f"} # branch: shaheen
+  #ibex:                   { git: "https://github.com/lowRISC/ibex.git", rev: "pulpissimo-v6.1.1" }
   scm:                    { git: "https://github.com/pulp-platform/scm.git", version: 1.0.1}
   hwpe-datamover-example: { git: "https://github.com/pulp-platform/hwpe-datamover-example.git", version: 1.0.1 }
   hci:                    { git: "https://github.com/pulp-platform/hci.git", version: 1.0.8 }
+  redmule:                { git: "https://github.com/pulp-platform/redmule.git", rev: alsaqr }
 
 sources:
     # Source files grouped in levels. Files in level 0 have no dependencies on files in this
@@ -65,3 +70,15 @@ sources:
       - rtl/core_region.sv
     # Level 3
   - rtl/pulp_cluster.sv
+  
+  - target: test
+    files:
+      - tb/mock_uart.sv
+      - tb/axi2apb_64_32.sv
+      - tb/mock_uart_axi.sv
+      - tb/pulp_cluster_tb.sv
+
+  - target: cluster_standalone
+    files:
+      - include/pulp_interfaces.sv
+  
