@@ -24,6 +24,72 @@
 */
 `include "pulp_soc_defines.sv"
 
+module pe_ip_decode
+  import pulp_cluster_package::*;
+  #(
+  parameter type pe_addr_t     = logic,
+  parameter type pe_idx_t      = logic,
+  parameter CLUSTER_ALIAS_BASE = 12'h000,
+  parameter PE_ROUTING_LSB     = 10,
+  parameter PE_ROUTING_MSB     = 13,
+  parameter HWPE_PRESENT       = 0,
+  parameter ADDREXT            = 0
+)
+(
+     input pe_addr_t    addr_i,
+     input logic [31:0] addrext_i,
+     input logic        cluster_alias_i,
+     output pe_idx_t    pe_idx_o
+);
+   
+   pe_idx_t pe_idx;
+   localparam pe_idx_t PE_IDX_EXT = pulp_cluster_package::SPER_EXT_ID;
+   localparam pe_idx_t PE_IDX_ERR = pulp_cluster_package::SPER_ERROR_ID;
+   
+   always_comb begin
+        pe_idx = PE_IDX_EXT;
+        pe_idx_o = PE_IDX_EXT;
+        if (ADDREXT && addrext_i != '0) begin
+          pe_idx_o = PE_IDX_EXT;
+        end else begin
+          if (
+            // if the access is to this cluster ..
+            (addr_i[31:24] == 8'h10 || (cluster_alias_i && addr_i[31:24] == CLUSTER_ALIAS_BASE[11:4]))
+            // .. and the peripherals
+            && (addr_i[23:20] >= 4'h2 && addr_i[23:20] <= 4'h3)
+          ) begin
+            // decode peripheral to access
+            pe_idx = addr_i[PE_ROUTING_MSB:PE_ROUTING_LSB];
+            if (addr_i[23:20] == 4'h2 && addr_i[19:PE_ROUTING_MSB+1] == '0 && pe_idx < NB_SPERIPHS) begin
+              if (pe_idx >= pulp_cluster_package::SPER_EVENT_U_ID &&
+                  pe_idx < pulp_cluster_package::SPER_EVENT_U_ID
+                            + pulp_cluster_package::NB_SPERIPH_PLUGS_EU
+              ) begin
+                // Index is in event unit range, so return unified event unit port.
+                pe_idx_o = pulp_cluster_package::SPER_EVENT_U_ID;
+              end else if (!HWPE_PRESENT && pe_idx == pulp_cluster_package::SPER_HWPE_ID) begin
+                // Decode non-present HWPE to error slave.
+                pe_idx_o = PE_IDX_ERR;
+              end else if (pe_idx == PE_IDX_EXT) begin
+                // Decode direct accesses to external peripheral to error slave to break addressing
+                // loop.
+                pe_idx_o = PE_IDX_ERR;
+              end else begin
+                // Return index of other peripheral.
+                pe_idx_o = pe_idx;
+              end
+            // .. or, if the address does not decode to a peripheral, decode to error slave
+            end else begin
+              pe_idx_o = PE_IDX_ERR;
+            end
+          end else begin
+            // otherwise decode to 'external' peripheral
+            pe_idx_o = PE_IDX_EXT;
+          end
+        end // else: !if(ADDREXT && addrext_i != '0)
+   end // always_comb
+endmodule // pe_ip_decode
+
 module xbar_pe_wrap
   import pulp_cluster_package::*;
   #(
@@ -47,11 +113,13 @@ module xbar_pe_wrap
   XBAR_TCDM_BUS.Slave                  mperiph_slave[NB_MPERIPHS-1:0]
  );
 
+  logic cluster_alias;
 `ifdef CLUSTER_ALIAS
-   logic                               cluster_alias=1'b1;
+  assign cluster_alias = 1'b1;
 `else
-   logic                               cluster_alias=1'b0;
-`endif   
+  assign cluster_alias = 1'b0;
+`endif
+   
   localparam int unsigned PE_XBAR_N_INPS = NB_CORES + NB_MPERIPHS;
   localparam int unsigned PE_XBAR_N_OUPS = NB_SPERIPHS;
   typedef logic [ADDR_WIDTH-1:0]              pe_addr_t;
@@ -78,52 +146,26 @@ module xbar_pe_wrap
   logic     [PE_XBAR_N_INPS-1:0]  pe_inp_req,
                                   pe_inp_gnt,
                                   pe_inp_rvalid;
-  localparam pe_idx_t PE_IDX_EXT = pulp_cluster_package::SPER_EXT_ID;
-  localparam pe_idx_t PE_IDX_ERR = pulp_cluster_package::SPER_ERROR_ID;
-  function automatic pe_idx_t addr_to_pe_idx(input pe_addr_t addr, input logic [31:0] addrext);
-    pe_idx_t pe_idx;
-    if (ADDREXT && addrext != '0) begin
-      return PE_IDX_EXT;
-    end else begin
-      if (
-        // if the access is to this cluster ..
-        (addr[31:24] == 8'h10 || (cluster_alias && addr[31:24] == CLUSTER_ALIAS_BASE[11:4]))
-        // .. and the peripherals
-        && (addr[23:20] >= 4'h2 && addr[23:20] <= 4'h3)
-      ) begin
-        // decode peripheral to access
-        pe_idx = addr[PE_ROUTING_MSB:PE_ROUTING_LSB];
-        if (addr[23:20] == 4'h2 && addr[19:PE_ROUTING_MSB+1] == '0 && pe_idx < NB_SPERIPHS) begin
-          if (pe_idx >= pulp_cluster_package::SPER_EVENT_U_ID &&
-              pe_idx < pulp_cluster_package::SPER_EVENT_U_ID
-                        + pulp_cluster_package::NB_SPERIPH_PLUGS_EU
-          ) begin
-            // Index is in event unit range, so return unified event unit port.
-            return pulp_cluster_package::SPER_EVENT_U_ID;
-          end else if (!HWPE_PRESENT && pe_idx == pulp_cluster_package::SPER_HWPE_ID) begin
-            // Decode non-present HWPE to error slave.
-            return PE_IDX_ERR;
-          end else if (pe_idx == PE_IDX_EXT) begin
-            // Decode direct accesses to external peripheral to error slave to break addressing
-            // loop.
-            return PE_IDX_ERR;
-          end else begin
-            // Return index of other peripheral.
-            return pe_idx;
-          end
-        // .. or, if the address does not decode to a peripheral, decode to error slave
-        end else begin
-          return PE_IDX_ERR;
-        end
-      end else begin
-        // otherwise decode to 'external' peripheral
-        return PE_IDX_EXT;
-      end
-    end
-  endfunction
+
+   
   for (genvar i = 0; i < NB_CORES; i++) begin : gen_pe_xbar_bind_cores
+    pe_idx_t s_pe_idx;
+    pe_ip_decode #(
+      .pe_addr_t          ( pe_addr_t          ),
+      .pe_idx_t           ( pe_idx_t           ),
+      .CLUSTER_ALIAS_BASE ( CLUSTER_ALIAS_BASE ),
+      .PE_ROUTING_LSB     ( PE_ROUTING_LSB     ),
+      .PE_ROUTING_MSB     ( PE_ROUTING_MSB     ),
+      .HWPE_PRESENT       ( HWPE_PRESENT       ),
+      .ADDREXT            ( ADDREXT            )
+      ) id_decoder (
+         .addr_i          ( core_periph_slave[i].add ),
+         .addrext_i       ( '0                       ),
+         .cluster_alias_i ( cluster_alias            ),
+         .pe_idx_o        ( s_pe_idx                 )
+         );
     assign pe_inp_req[i] = core_periph_slave[i].req;
-    assign pe_inp_idx[i] = addr_to_pe_idx(core_periph_slave[i].add, '0);
+    assign pe_inp_idx[i] = s_pe_idx;
     assign pe_inp_wdata[i].addr = core_periph_slave[i].add;
     assign pe_inp_wdata[i].data = core_periph_slave[i].wdata;
     assign pe_inp_wdata[i].id   = 1 << i;
@@ -136,8 +178,23 @@ module xbar_pe_wrap
     assign core_periph_slave[i].r_valid = pe_inp_rvalid[i];
   end
   for (genvar i = 0; i < NB_MPERIPHS; i++) begin : gen_pe_xbar_bind_mperiphs
+    pe_idx_t s_pe_idx;
+    pe_ip_decode #(
+      .pe_addr_t          ( pe_addr_t          ),
+      .pe_idx_t           ( pe_idx_t           ),
+      .CLUSTER_ALIAS_BASE ( CLUSTER_ALIAS_BASE ),
+      .PE_ROUTING_LSB     ( PE_ROUTING_LSB     ),
+      .PE_ROUTING_MSB     ( PE_ROUTING_MSB     ),
+      .HWPE_PRESENT       ( HWPE_PRESENT       ),
+      .ADDREXT            ( ADDREXT            )
+      ) id_decoder (
+         .addr_i          ( mperiph_slave[i].add ),
+         .addrext_i       ( '0                   ),
+         .cluster_alias_i ( cluster_alias        ),
+         .pe_idx_o        ( s_pe_idx             )
+         );
     assign pe_inp_req[i+NB_CORES] = mperiph_slave[i].req;
-    assign pe_inp_idx[i+NB_CORES] = addr_to_pe_idx(mperiph_slave[i].add, '0);
+    assign pe_inp_idx[i+NB_CORES] = s_pe_idx;
     assign pe_inp_wdata[i+NB_CORES].addr  = mperiph_slave[i].add;
     assign pe_inp_wdata[i+NB_CORES].data  = mperiph_slave[i].wdata;
     assign pe_inp_wdata[i+NB_CORES].id    = 1 << (i + NB_CORES);

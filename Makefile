@@ -64,7 +64,7 @@ pulp-runtime:
 
 ## Clone regression tests for bare-metal verification
 regression-tests:
-	git clone https://github.com/pulp-platform/regression_tests $@
+	git clone https://github.com/pulp-platform/regression_tests -b yt/alsaqr $@
 
 ########################
 # Build and simulation #
