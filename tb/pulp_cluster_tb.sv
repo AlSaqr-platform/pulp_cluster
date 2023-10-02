@@ -258,6 +258,7 @@ module pulp_cluster_tb;
       );
 
   pulp_cluster  #(
+    .CORE_TYPE_CL                 ( 0                        ),
     .NB_CORES                     ( `NB_CORES                ),
     .NB_HWPE_PORTS                ( 4                        ),
     .NB_DMAS                      ( `NB_DMAS                 ),
