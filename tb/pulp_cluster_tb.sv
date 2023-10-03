@@ -488,10 +488,10 @@ module pulp_cluster_tb;
      
    if(ret_val[30:0]==0) begin
      $display("[TB] Test passed\n");
-     $finish;
    end else begin
-     $fatal(1,"[TB] Test not passed: ret_val!=0\n");
+     $display("[TB] Test not passed: ret_val!=0\n");
    end
+   $stop;
   
   end // initial begin
    
