@@ -118,3 +118,17 @@ test-rt-mchan: pulp-runtime regression-tests
 	cd regression-tests && $(bwruntest) --proc-verbose -v \
 		-t 3600 --yaml \
 		-o runtime-mchan.xml pulp_cluster-mchan-tests.yaml
+
+.PHONY: test-cl-cores-fpu
+test-cl-cores-fpu: pulp-runtime regression-tests
+	source env/env.sh; \
+	cd regression-tests && $(bwruntest) --proc-verbose -v \
+		-t 3600 --yaml \
+		-o cl-core-fpu.xml fpu_tests.yaml
+
+.PHONY: test-hwpe
+test-hwpe: pulp-runtime regression-tests
+	source env/env.sh; \
+	cd regression-tests && $(bwruntest) --proc-verbose -v \
+		-t 3600 --yaml \
+		-o hwpe.xml hwpe_tests.yaml
