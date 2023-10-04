@@ -257,7 +257,9 @@ module pulp_cluster_tb;
       .dst        ( axi_slave[1]                 )
       );
 
-  pulp_cluster  #(
+  pulp_cluster
+  `ifdef CUSTOM_CLUSTER_PARAMS
+  #(
     .CORE_TYPE_CL                 ( 0                        ),
     .NB_CORES                     ( `NB_CORES                ),
     .NB_HWPE_PORTS                ( 4                        ),
@@ -293,7 +295,9 @@ module pulp_cluster_tb;
     .LOG_CLUSTER                  ( 3                        ),
     .PE_ROUTING_LSB               ( 10                       ),
     .EVNT_WIDTH                   ( 8                        )
-  ) cluster_i (
+  )
+  `endif
+  cluster_i (
       .clk_i                       ( s_clk                                ),
       .rst_ni                      ( s_rstn                               ),
       .ref_clk_i                   ( s_clk                                ),
