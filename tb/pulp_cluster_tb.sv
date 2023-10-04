@@ -48,7 +48,7 @@ module pulp_cluster_tb;
    
   localparam AxiAw  = 64;
   localparam AxiDw  = 64;
-  localparam AxiIw  = 6;
+  localparam AxiIw  = 5;
   localparam NMst   = 2;
   localparam NSlv   = 3;
   localparam AxiIwMst = AxiIw + $clog2(NMst);
