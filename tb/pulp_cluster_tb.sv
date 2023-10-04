@@ -464,6 +464,23 @@ module pulp_cluster_tb;
    @(posedge s_clk);
    axi_master_drv.recv_b(b_beat);
 
+   $display("[TB] Initialize boot addr\n");
+   for (int i = 0; i < `NB_CORES; i++) begin
+    aw_beat.ax_addr  = 32'h1020_0040 + i*4;
+    aw_beat.ax_len   = '0;
+    aw_beat.ax_burst = axi_pkg::BURST_INCR;
+    aw_beat.ax_size  = 4'h2;
+
+    w_beat.w_data = (i % 2) == 0 ? {32'h0, 32'h1c00_8080} : {32'h1c00_8080, 32'h0};
+    w_beat.w_strb = (i % 2) == 0 ? 8'h0f : 8'hf0;
+    w_beat.w_last = '1;
+
+    axi_master_drv.send_aw(aw_beat);
+    axi_master_drv.send_w(w_beat);
+    @(posedge s_clk);
+    axi_master_drv.recv_b(b_beat);
+   end
+
    $display("[TB] Launch cluster\n");
      
    @(negedge s_clk);
