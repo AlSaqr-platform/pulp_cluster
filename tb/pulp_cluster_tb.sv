@@ -179,7 +179,7 @@ module pulp_cluster_tb;
   assign addr_map[2] = '{ // Pulp Cluster
     idx:        2,
     start_addr: 32'h1000_0000,
-    end_addr:   32'h1004_0000
+    end_addr:   32'h1040_0000
   };
   assign addr_map[3] = '{ // Return address
     idx:        1, // Just put it in axi_sim_mem
