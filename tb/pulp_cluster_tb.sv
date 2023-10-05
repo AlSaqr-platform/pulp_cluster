@@ -147,7 +147,22 @@ module pulp_cluster_tb;
      .clk_i     ( s_clk      ),
      .rst_ni    ( s_rstn     ),
      .axi_req_i ( axi_memreq ),
-     .axi_rsp_o ( axi_memrsp )
+     .axi_rsp_o ( axi_memrsp ),
+
+     .mon_w_valid_o      (   ),
+     .mon_w_addr_o       (   ),
+     .mon_w_data_o       (   ),
+     .mon_w_id_o         (   ),
+     .mon_w_user_o       (   ),
+     .mon_w_beat_count_o (   ),
+     .mon_w_last_o       (   ),
+     .mon_r_valid_o      (   ),
+     .mon_r_addr_o       (   ),
+     .mon_r_data_o       (   ),
+     .mon_r_id_o         (   ),
+     .mon_r_user_o       (   ),
+     .mon_r_beat_count_o (   ),
+     .mon_r_last_o       (   )
   );
 
   mock_uart_axi #(
@@ -358,7 +373,25 @@ module pulp_cluster_tb;
       .async_data_slave_r_data_o   ( async_soc_to_cluster_axi_bus.r_data  ),
       .async_data_slave_b_wptr_o   ( async_soc_to_cluster_axi_bus.b_wptr  ),
       .async_data_slave_b_rptr_i   ( async_soc_to_cluster_axi_bus.b_rptr  ),
-      .async_data_slave_b_data_o   ( async_soc_to_cluster_axi_bus.b_data  )
+      .async_data_slave_b_data_o   ( async_soc_to_cluster_axi_bus.b_data  ),
+
+      .async_cfg_master_aw_wptr_o  (                                      ),
+      .async_cfg_master_aw_data_o  (                                      ),
+      .async_cfg_master_aw_rptr_i  ( '0                                   ),
+      .async_cfg_master_ar_wptr_o  (                                      ),
+      .async_cfg_master_ar_data_o  (                                      ),
+      .async_cfg_master_ar_rptr_i  ( '0                                   ),
+      .async_cfg_master_w_wptr_o   (                                      ),
+      .async_cfg_master_w_data_o   (                                      ),
+      .async_cfg_master_w_rptr_i   ( '0                                   ),
+      .async_cfg_master_r_wptr_i   ( '0                                   ),
+      .async_cfg_master_r_data_i   ( '0                                   ),
+      .async_cfg_master_r_rptr_o   (                                      ),
+      .async_cfg_master_b_wptr_i   ( '0                                   ),
+      .async_cfg_master_b_data_i   ( '0                                   ),
+      .async_cfg_master_b_rptr_o   (                                      ),
+
+      .host_mailbox_irq_i          ( '0                                   )
    );
 
   // Load ELF binary file
