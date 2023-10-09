@@ -25,6 +25,7 @@ module hwpe_subsystem
   input  logic                    clk,
   input  logic                    rst_n,
   input  logic                    test_mode,
+  input  logic                    hwpe_en_i,
   
   hci_core_intf.master            hwpe_xbar_master,
   XBAR_PERIPH_BUS.Slave           hwpe_cfg_slave,
@@ -32,6 +33,15 @@ module hwpe_subsystem
   output logic [N_CORES-1:0][1:0] evt_o,
   output logic                    busy_o
 );
+
+  logic hwpe_clk;
+
+  tc_clk_gating i_hwpe_clock_gate (
+    .clk_i     ( clk       ),
+    .en_i      ( hwpe_en_i ),
+    .test_en_i ( test_mode ),
+    .clk_o     ( hwpe_clk  )
+  );
 
   hwpe_ctrl_intf_periph #(
     .ID_WIDTH ( ID_WIDTH )
@@ -44,7 +54,7 @@ module hwpe_subsystem
     .N_CORES     ( N_CORES          ),
     .DW          ( N_MASTER_PORT*32 )
   ) i_redmule    (
-    .clk_i       ( clk              ),
+    .clk_i       ( hwpe_clk         ),
     .rst_ni      ( rst_n            ),
     .test_mode_i ( test_mode        ),
     .busy_o      ( busy_o           ),
