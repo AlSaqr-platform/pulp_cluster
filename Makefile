@@ -77,6 +77,9 @@ sim_clean:
 scripts/compile.tcl: | Bender.lock
 	$(call generate_vsim, $@, -t rtl -t test -t cluster_standalone,..)
 
+scripts/compile_with_tech.tcl: | Bender.lock
+	$(call generate_vsim, $@, -t rtl -t asic -t cv32e40p_include_tracer -t cluster_standalone,..)
+
 # compile the elfloader.cpp
 $(dpi-library)/%.o: tb/dpi/%.cc $(dpi_hdr)
 	mkdir -p $(dpi-library)
@@ -93,9 +96,16 @@ compile: $(library) $(dpi) $(dpi-library)/cl_dpi.so
 	@test -f scripts/compile.tcl || { echo "ERROR: scripts/compile.tcl file does not exist. Did you run make scripts in bender mode?"; exit 1; }
 	vsim -c -do 'source scripts/compile.tcl; quit'
 
+compile_with_tech: $(library) $(dpi) $(dpi-library)/cl_dpi.so
+	@test -f Bender.lock || { echo "ERROR: Bender.lock file does not exist. Did you run make checkout in bender mode?"; exit 1; }
+	@test -f scripts/compile_with_tech.tcl || { echo "ERROR: scripts/compile_with_tech.tcl file does not exist. Did you run make scripts in bender mode?"; exit 1; }
+	vsim -c -do 'source scripts/compile_with_tech.tcl; quit'
+
 build: compile $(dpi)
 	vopt $(compile_flag) -suppress 3053 -suppress 8885 -work $(library)  $(top_level) -o $(top_level)_optimized +acc -check_synthesis
 
+build_with_tech: compile_with_tech $(dpi)
+	vopt $(compile_flag) -suppress 3053 -suppress 8885 -suppress 13259 -work $(library)  $(top_level) -o $(top_level)_optimized +acc -check_synthesis
 
 run:
 	vsim +permissive $(questa-flags) $(questa-cmd) -suppress 3053 -suppress 8885 -lib $(library)  +MAX_CYCLES=$(max_cycles) +UVM_TESTNAME=$(test_case) +APP=$(elf-bin) +notimingchecks +nospecify  -t 1ps \
@@ -118,3 +128,17 @@ test-rt-mchan: pulp-runtime regression-tests
 	cd regression-tests && $(bwruntest) --proc-verbose -v \
 		-t 3600 --yaml \
 		-o runtime-mchan.xml pulp_cluster-mchan-tests.yaml
+
+.PHONY: test-cl-cores-fpu
+test-cl-cores-fpu: pulp-runtime regression-tests
+	source env/env.sh; \
+	cd regression-tests && $(bwruntest) --proc-verbose -v \
+		-t 3600 --yaml \
+		-o cl-core-fpu.xml fpu_tests.yaml
+
+.PHONY: test-hwpe
+test-hwpe: pulp-runtime regression-tests
+	source env/env.sh; \
+	cd regression-tests && $(bwruntest) --proc-verbose -v \
+		-t 3600 --yaml \
+		-o hwpe.xml hwpe_tests.yaml

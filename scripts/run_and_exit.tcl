@@ -10,4 +10,10 @@ if {![info exists APP]} {
 vsim +permissive -suppress 3053 -suppress 8885 -lib $VSIM_PATH/work +APP=$APP +notimingchecks +nospecify  -t 1ps -sv_lib $VSIM_PATH/work-dpi/cl_dpi  pulp_cluster_tb_optimized +permissive-off ++$APP
 
 add log -r /*
-run -all
+
+proc run_and_exit {} {
+    run -all
+    quit -code [examine -radix decimal sim:/pulp_cluster_tb/ret_val(30:0)]
+}
+
+run_and_exit

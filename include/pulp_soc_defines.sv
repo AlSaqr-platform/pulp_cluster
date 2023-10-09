@@ -47,3 +47,5 @@
 `define NB_DMAS       4
 `define NB_MPERIPHS   1
 `define NB_SPERIPHS   10
+
+`define BOOT_ADDR 32'h1c00_8080

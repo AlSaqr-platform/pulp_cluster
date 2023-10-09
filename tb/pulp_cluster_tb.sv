@@ -48,7 +48,7 @@ module pulp_cluster_tb;
    
   localparam AxiAw  = 64;
   localparam AxiDw  = 64;
-  localparam AxiIw  = 6;
+  localparam AxiIw  = 5;
   localparam NMst   = 2;
   localparam NSlv   = 3;
   localparam AxiIwMst = AxiIw + $clog2(NMst);
@@ -147,7 +147,22 @@ module pulp_cluster_tb;
      .clk_i     ( s_clk      ),
      .rst_ni    ( s_rstn     ),
      .axi_req_i ( axi_memreq ),
-     .axi_rsp_o ( axi_memrsp )
+     .axi_rsp_o ( axi_memrsp ),
+
+     .mon_w_valid_o      (   ),
+     .mon_w_addr_o       (   ),
+     .mon_w_data_o       (   ),
+     .mon_w_id_o         (   ),
+     .mon_w_user_o       (   ),
+     .mon_w_beat_count_o (   ),
+     .mon_w_last_o       (   ),
+     .mon_r_valid_o      (   ),
+     .mon_r_addr_o       (   ),
+     .mon_r_data_o       (   ),
+     .mon_r_id_o         (   ),
+     .mon_r_user_o       (   ),
+     .mon_r_beat_count_o (   ),
+     .mon_r_last_o       (   )
   );
 
   mock_uart_axi #(
@@ -179,7 +194,7 @@ module pulp_cluster_tb;
   assign addr_map[2] = '{ // Pulp Cluster
     idx:        2,
     start_addr: 32'h1000_0000,
-    end_addr:   32'h1004_0000
+    end_addr:   32'h1040_0000
   };
   assign addr_map[3] = '{ // Return address
     idx:        1, // Just put it in axi_sim_mem
@@ -257,7 +272,10 @@ module pulp_cluster_tb;
       .dst        ( axi_slave[1]                 )
       );
 
-  pulp_cluster  #(
+  pulp_cluster
+  `ifdef CUSTOM_CLUSTER_PARAMS
+  #(
+    .CORE_TYPE_CL                 ( 0                        ),
     .NB_CORES                     ( `NB_CORES                ),
     .NB_HWPE_PORTS                ( 4                        ),
     .NB_DMAS                      ( `NB_DMAS                 ),
@@ -292,7 +310,9 @@ module pulp_cluster_tb;
     .LOG_CLUSTER                  ( 3                        ),
     .PE_ROUTING_LSB               ( 10                       ),
     .EVNT_WIDTH                   ( 8                        )
-  ) cluster_i (
+  )
+  `endif
+  cluster_i (
       .clk_i                       ( s_clk                                ),
       .rst_ni                      ( s_rstn                               ),
       .ref_clk_i                   ( s_clk                                ),
@@ -353,7 +373,25 @@ module pulp_cluster_tb;
       .async_data_slave_r_data_o   ( async_soc_to_cluster_axi_bus.r_data  ),
       .async_data_slave_b_wptr_o   ( async_soc_to_cluster_axi_bus.b_wptr  ),
       .async_data_slave_b_rptr_i   ( async_soc_to_cluster_axi_bus.b_rptr  ),
-      .async_data_slave_b_data_o   ( async_soc_to_cluster_axi_bus.b_data  )
+      .async_data_slave_b_data_o   ( async_soc_to_cluster_axi_bus.b_data  ),
+
+      .async_cfg_master_aw_wptr_o  (                                      ),
+      .async_cfg_master_aw_data_o  (                                      ),
+      .async_cfg_master_aw_rptr_i  ( '0                                   ),
+      .async_cfg_master_ar_wptr_o  (                                      ),
+      .async_cfg_master_ar_data_o  (                                      ),
+      .async_cfg_master_ar_rptr_i  ( '0                                   ),
+      .async_cfg_master_w_wptr_o   (                                      ),
+      .async_cfg_master_w_data_o   (                                      ),
+      .async_cfg_master_w_rptr_i   ( '0                                   ),
+      .async_cfg_master_r_wptr_i   ( '0                                   ),
+      .async_cfg_master_r_data_i   ( '0                                   ),
+      .async_cfg_master_r_rptr_o   (                                      ),
+      .async_cfg_master_b_wptr_i   ( '0                                   ),
+      .async_cfg_master_b_data_i   ( '0                                   ),
+      .async_cfg_master_b_rptr_o   (                                      ),
+
+      .host_mailbox_irq_i          ( '0                                   )
    );
 
   // Load ELF binary file
@@ -459,6 +497,23 @@ module pulp_cluster_tb;
    @(posedge s_clk);
    axi_master_drv.recv_b(b_beat);
 
+   $display("[TB] Initialize boot addr\n");
+   for (int i = 0; i < `NB_CORES; i++) begin
+    aw_beat.ax_addr  = 32'h1020_0040 + i*4;
+    aw_beat.ax_len   = '0;
+    aw_beat.ax_burst = axi_pkg::BURST_INCR;
+    aw_beat.ax_size  = 4'h2;
+
+    w_beat.w_data = (i % 2) == 0 ? {32'h0, `BOOT_ADDR} : {`BOOT_ADDR, 32'h0};
+    w_beat.w_strb = (i % 2) == 0 ? 8'h0f : 8'hf0;
+    w_beat.w_last = '1;
+
+    axi_master_drv.send_aw(aw_beat);
+    axi_master_drv.send_w(w_beat);
+    @(posedge s_clk);
+    axi_master_drv.recv_b(b_beat);
+   end
+
    $display("[TB] Launch cluster\n");
      
    @(negedge s_clk);
@@ -487,10 +542,10 @@ module pulp_cluster_tb;
      
    if(ret_val[30:0]==0) begin
      $display("[TB] Test passed\n");
-     $finish;
    end else begin
-     $fatal(1,"[TB] Test not passed: ret_val!=0\n");
+     $display("[TB] Test not passed: ret_val!=0\n");
    end
+   $stop;
   
   end // initial begin
    
