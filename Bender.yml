@@ -71,7 +71,7 @@ sources:
     # Level 3
   - rtl/pulp_cluster.sv
   
-  - target: any(all(rtl, not(synthesis)), test)
+  - target: tb_cluster_standalone
     files:
       - tb/mock_uart.sv
       - tb/axi2apb_64_32.sv
@@ -81,3 +81,13 @@ sources:
   - target: cluster_standalone
     files:
       - include/pulp_interfaces.sv
+
+  - target: macro_cluster_standalone
+    defines:
+      TARGET_ASIC: ~
+    files:
+      - gf22/macro_wrap/r2pv_wrap_gf22.sv
+      - gf22/macro_wrap/memwrap_gf22.sv
+      - gf22/macro_wrap/tc_sram_gf22.sv
+      - gf22/macro_wrap/tc_clk_gf22.sv
+      - gf22/macro_wrap/configurable_delay_gf22.sv
