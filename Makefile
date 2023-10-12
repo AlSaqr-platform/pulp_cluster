@@ -75,10 +75,10 @@ sim_clean:
 	rm -rf work
 
 scripts/compile.tcl: | Bender.lock
-	$(call generate_vsim, $@, -t rtl -t test -t cluster_standalone,..)
+	$(call generate_vsim, $@, -t rtl -t tb_cluster_standalone -t cluster_standalone -t test,..)
 
 scripts/compile_with_tech.tcl: | Bender.lock
-	$(call generate_vsim, $@, -t rtl -t asic -t cv32e40p_include_tracer -t cluster_standalone,..)
+	$(call generate_vsim, $@, -t rtl -t macro_cluster_standalone -t tb_cluster_standalone -t cluster_standalone -t test,..)
 
 # compile the elfloader.cpp
 $(dpi-library)/%.o: tb/dpi/%.cc $(dpi_hdr)
@@ -99,7 +99,7 @@ compile: $(library) $(dpi) $(dpi-library)/cl_dpi.so
 compile_with_tech: $(library) $(dpi) $(dpi-library)/cl_dpi.so
 	@test -f Bender.lock || { echo "ERROR: Bender.lock file does not exist. Did you run make checkout in bender mode?"; exit 1; }
 	@test -f scripts/compile_with_tech.tcl || { echo "ERROR: scripts/compile_with_tech.tcl file does not exist. Did you run make scripts in bender mode?"; exit 1; }
-	vsim -c -do 'source scripts/compile_with_tech.tcl; quit'
+	vsim -c -do 'source gf22/modelsim/libraries.sh; source scripts/compile_with_tech.tcl; quit'
 
 build: compile $(dpi)
 	vopt $(compile_flag) -suppress 3053 -suppress 8885 -work $(library)  $(top_level) -o $(top_level)_optimized +acc -check_synthesis

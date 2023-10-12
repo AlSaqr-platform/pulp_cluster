@@ -26,7 +26,6 @@ dependencies:
   axi:                    { git: "https://github.com/pulp-platform/axi.git", version: 0.39.1-beta }
   timer_unit:             { git: "https://github.com/pulp-platform/timer_unit.git", version: 1.0.2 }
   common_cells:           { git: "https://github.com/pulp-platform/common_cells.git", version: 1.13.1 }
-  pulpissimo_essentials:  { git: "git@iis-git.ee.ethz.ch:pulp-restricted/pulpissimo_essentials.git", rev: "74884253934e70daf92bc9fd4c08dc1808a9a700" }
   tech_cells_generic:     { git: "https://github.com/pulp-platform/tech_cells_generic.git", version: 0.2.4 }
   cv32e40p:               { git: "https://github.com/pulp-platform/cv32e40p.git", rev: "f914f3d2fd013a2d2c4c70f7afae3e6592496db7"} # branch: shaheen
   #ibex:                   { git: "https://github.com/lowRISC/ibex.git", rev: "pulpissimo-v6.1.1" }
@@ -72,7 +71,7 @@ sources:
     # Level 3
   - rtl/pulp_cluster.sv
   
-  - target: any(all(rtl, not(synthesis)), test)
+  - target: tb_cluster_standalone
     files:
       - tb/mock_uart.sv
       - tb/axi2apb_64_32.sv
@@ -82,3 +81,13 @@ sources:
   - target: cluster_standalone
     files:
       - include/pulp_interfaces.sv
+
+  - target: macro_cluster_standalone
+    defines:
+      TARGET_ASIC: ~
+    files:
+      - gf22/macro_wrap/r2pv_wrap_gf22.sv
+      - gf22/macro_wrap/memwrap_gf22.sv
+      - gf22/macro_wrap/tc_sram_gf22.sv
+      - gf22/macro_wrap/tc_clk_gf22.sv
+      - gf22/macro_wrap/configurable_delay_gf22.sv
