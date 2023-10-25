@@ -60,7 +60,7 @@ Bender.lock:
 
 ## Clone pulp-runtime as SW stack
 pulp-runtime:
-	git clone https://github.com/pulp-platform/pulp-runtime.git -b lv/pulp_cluster $@
+	git clone https://github.com/AlSaqr-platform/pulp-runtime.git $@
 
 ## Clone regression tests for bare-metal verification
 regression-tests:
@@ -78,7 +78,7 @@ scripts/compile.tcl: | Bender.lock
 	$(call generate_vsim, $@, -t rtl -t tb_cluster_standalone -t cluster_standalone -t test,..)
 
 scripts/compile_with_tech.tcl: | Bender.lock
-	$(call generate_vsim, $@, -t rtl -t macro_cluster_standalone -t tb_cluster_standalone -t cluster_standalone -t test,..)
+	$(call generate_vsim, $@, -t rtl -t macro_cluster_standalone -t tb_cluster_standalone -t cluster_standalone -t test -t asic,..)
 
 # compile the elfloader.cpp
 $(dpi-library)/%.o: tb/dpi/%.cc $(dpi_hdr)

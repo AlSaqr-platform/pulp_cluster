@@ -48,4 +48,4 @@
 `define NB_MPERIPHS   1
 `define NB_SPERIPHS   10
 
-`define BOOT_ADDR 32'h1c00_8080
+`define BOOT_ADDR 32'h1c002080
