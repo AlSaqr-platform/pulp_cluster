@@ -265,7 +265,8 @@ module core_region
         .apu_master_flags_i    ( apu_master_flags_i    ),
 
         .ext_perf_counters_i   ( perf_counters         ),
-        .fregfile_disable_i    ( 1'b1                  )   //disable FP regfile
+        .fregfile_disable_i    ( 1'b1                  ),   //disable FP regfile
+        .data_unaligned_o      (                       )
       ); 
     end else begin: CL_CORE
       assign boot_addr = boot_addr_i & 32'hFFFFFF00; // RI5CY expects 0x80 offset, Ibex expects 0x00 offset (adds reset offset 0x80 internally)
