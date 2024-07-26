@@ -27,12 +27,10 @@ dependencies:
   timer_unit:             { git: "https://github.com/pulp-platform/timer_unit.git", version: 1.0.2 }
   common_cells:           { git: "https://github.com/pulp-platform/common_cells.git", version: 1.13.1 }
   tech_cells_generic:     { git: "https://github.com/pulp-platform/tech_cells_generic.git", version: 0.2.4 }
-  riscv:                  { git: "https://github.com/AlSaqr-platform/riscv_nn.git", rev: "e8f2ddadb1fcdc591d861014843818c07c09b733"} # branch: shaheen
-  #ibex:                   { git: "https://github.com/lowRISC/ibex.git", rev: "pulpissimo-v6.1.1" }
+  riscv:                  { git: "https://github.com/AlSaqr-platform/riscv_nn.git", rev: "9092e58e6c7d41e4dd19308576ef5fbcbc8c84c2"} # branch: shaheen
   scm:                    { git: "https://github.com/pulp-platform/scm.git", version: 1.0.1}
   hwpe-datamover-example: { git: "https://github.com/pulp-platform/hwpe-datamover-example.git", version: 1.0.1 }
   hci:                    { git: "https://github.com/pulp-platform/hci.git", version: 1.0.8 }
-  redmule:                { git: "https://github.com/pulp-platform/redmule.git", rev: alsaqr }
 
 sources:
     # Source files grouped in levels. Files in level 0 have no dependencies on files in this
