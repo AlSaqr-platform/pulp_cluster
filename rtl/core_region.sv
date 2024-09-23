@@ -214,6 +214,7 @@ module core_region
       ) RISCV_CORE (
         .clk_i                 ( clk_i             ),
         .rst_ni                ( rst_ni            ),
+        .hart_id_i             ( hart_id           ),
 
         .clock_en_i            ( clock_en_i        ),
         .test_en_i             ( test_mode_i       ),
