@@ -27,7 +27,7 @@ dependencies:
   timer_unit:             { git: "https://github.com/pulp-platform/timer_unit.git", version: 1.0.2 }
   common_cells:           { git: "https://github.com/pulp-platform/common_cells.git", version: 1.13.1 }
   tech_cells_generic:     { git: "https://github.com/pulp-platform/tech_cells_generic.git", version: 0.2.4 }
-  riscv:                  { git: "https://github.com/AlSaqr-platform/riscv_nn.git", rev: "291ad04adb290e8f3aa80c22e5528d0640f5a8ae"} # branch: alsaqr-2.0
+  riscv:                  { git: "https://github.com/AlSaqr-platform/riscv_nn.git", rev: "281f1ef09b5b9a8bd1607441adf405fdf785f844"} # branch: alsaqr-2.0
   scm:                    { git: "https://github.com/pulp-platform/scm.git", version: 1.0.1}
   hwpe-datamover-example: { git: "https://github.com/pulp-platform/hwpe-datamover-example.git", version: 1.0.1 }
   hci:                    { git: "https://github.com/pulp-platform/hci.git", version: 1.0.8 }
