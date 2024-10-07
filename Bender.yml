@@ -19,6 +19,7 @@ dependencies:
   event_unit_flex:        { git: "https://github.com/pulp-platform/event_unit_flex.git", rev: "1.4.1" }
   mchan:                  { git: "https://github.com/pulp-platform/mchan.git", version: 1.2.2 }
   hier-icache:            { git: "https://github.com/pulp-platform/hier-icache.git", rev: "1e94c16b8f3082af40cc7e579027dc485202c1d6" }
+  cluster_icache:         { git: "https://github.com/pulp-platform/cluster_icache.git", rev: "8114ab36fd446f76cd1e9f139f12a62ab1fb9a6a" } # michaero/branch: astral_cut_path
   icache_mp_128_pf:       { git: "https://github.com/pulp-platform/icache_mp_128_pf.git", rev: "6f2e54102001230db9c82432bf9e011842419a48" }
   icache_private:         { git: "https://github.com/AlSaqr-platform/icache_private.git", rev: "84436443d3a2dbad0b94a85c2c5cc8915632fd26" }
   cluster_peripherals:    { git: "https://github.com/pulp-platform/cluster_peripherals.git", version: 2.1.0 }
@@ -57,16 +58,8 @@ sources:
     # Level 1
   - rtl/cluster_peripherals.sv
   - rtl/core_demux.sv
+  - rtl/core_region.sv
     # Level 2
-  - target: rtl
-    defines:
-      TRACE_EXECUTION: ~
-    files:
-      - rtl/core_region.sv
-  - target: not(rtl)
-    files:
-      - rtl/core_region.sv
-    # Level 3
   - rtl/pulp_cluster.sv
   
   - target: tb_cluster_standalone

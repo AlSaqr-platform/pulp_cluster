@@ -25,6 +25,7 @@ import hci_package::*;
 `include "axi/typedef.svh"
 `include "axi/assign.svh"
 
+`define SNITCH_ICACHE
 
 module pulp_cluster
 #(
@@ -1097,6 +1098,80 @@ module pulp_cluster
     end
   endgenerate
 
+`ifdef SNITCH_ICACHE
+  instr_axi_req_t s_core_instr_bus_req;
+  instr_axi_resp_t s_core_instr_bus_resp;
+
+  always_comb begin
+    s_core_instr_bus.aw_addr = '0;
+    s_core_instr_bus.ar_addr = '0;
+    `AXI_SET_FROM_REQ(s_core_instr_bus, s_core_instr_bus_req)
+  end
+  `AXI_ASSIGN_TO_RESP(s_core_instr_bus_resp, s_core_instr_bus)
+
+  pulp_icache_wrap #(
+    .NumFetchPorts  ( Cfg.NumCores                                 ),
+    .L0_LINE_COUNT  ( Cfg.iCachePrivateSize*8/256                  ),
+    .LINE_WIDTH     ( 256                                          ), // Ideally 32*NumCores
+    .LINE_COUNT     ( Cfg.iCacheSharedSize*8/256/Cfg.iCacheNumWays ),
+    .SET_COUNT      ( Cfg.iCacheNumWays                            ),
+    .L1DataParityWidth ( 8 ),
+    .L0DataParityWidth ( 8 ),
+    .FetchAddrWidth ( AddrWidth                                    ),
+    .FetchDataWidth ( Cfg.iCachePrivateDataWidth                   ),
+    .AxiAddrWidth   ( AddrWidth                                    ),
+    .AxiDataWidth   ( Cfg.AxiDataOutWidth                          ),
+    .axi_req_t      ( instr_axi_req_t                              ),
+    .axi_rsp_t      ( instr_axi_resp_t                             )
+  ) icache_top_i (
+    .clk_i                ( clk_i                       ),
+    .rst_ni               ( rst_ni                      ),
+
+    .fetch_req_i          ( instr_req                   ),
+    .fetch_addr_i         ( instr_addr                  ),
+    .fetch_gnt_o          ( instr_gnt                   ),
+    .fetch_rvalid_o       ( instr_r_valid               ),
+    .fetch_rdata_o        ( instr_r_rdata               ),
+    .fetch_rerror_o       (),
+
+    .enable_prefetching_i ( s_enable_l1_l15_prefetch[0] ),
+    .icache_l0_events_o   ( s_icache_l0_events ),
+    .icache_l1_events_o   ( s_icache_l1_events ),
+    .flush_valid_i        ( s_icache_flush_valid ),
+    .flush_ready_o        ( s_icache_flush_ready ),
+
+    .sram_cfg_data_i      ('0),
+    .sram_cfg_tag_i       ('0),
+
+    .axi_req_o            ( s_core_instr_bus_req  ),
+    .axi_rsp_i            ( s_core_instr_bus_resp )
+  );
+
+  for (genvar i = 0; i < Cfg.NumCores; i++) begin
+    assign IC_ctrl_unit_bus_pri[i].bypass_ack     = '0;
+    assign IC_ctrl_unit_bus_pri[i].flush_ack      = '0;
+    assign IC_ctrl_unit_bus_pri[i].sel_flush_ack  = '0;
+    `ifdef FEATURE_ICACHE_STAT
+      assign IC_ctrl_unit_bus_pri[i].ctrl_hit_count   = '0;
+      assign IC_ctrl_unit_bus_pri[i].ctrl_trans_count = '0;
+      assign IC_ctrl_unit_bus_pri[i].ctrl_miss_count  = '0;
+      assign IC_ctrl_unit_bus_pri[i].ctrl_cong_count  = '0;
+    `endif
+  end
+
+  for (genvar i = 0; i < Cfg.iCacheNumBanks; i++) begin
+    assign IC_ctrl_unit_bus_main[i].ctrl_flush_ack     = '0;
+    assign IC_ctrl_unit_bus_main[i].ctrl_ack_enable    = '0;
+    assign IC_ctrl_unit_bus_main[i].ctrl_ack_disable   = '0;
+    assign IC_ctrl_unit_bus_main[i].ctrl_pending_trans = '0;
+    assign IC_ctrl_unit_bus_main[i].sel_flush_ack      = '0;
+    `ifdef FEATURE_ICACHE_STAT
+      assign IC_ctrl_unit_bus_main[i].ctrl_hit_count   = '0;
+      assign IC_ctrl_unit_bus_main[i].ctrl_trans_count = '0;
+      assign IC_ctrl_unit_bus_main[i].ctrl_miss_count  = '0;
+    `endif
+  end
+`else
 `ifdef PRIVATE_ICACHE
 
   icache_hier_top #(
@@ -1391,9 +1466,10 @@ module pulp_cluster
     .IC_ctrl_unit_slave_if  ( IC_ctrl_unit_bus        ),
     .L0_ctrl_unit_slave_if  ( L0_ctrl_unit_bus        )
   );
-  `endif // Closes `ifdef SP_ICACHE
- `endif // Closes `ifdef MP_ICACHE
-`endif // Closes `ifdef PRI_ICACHE
+   `endif // Closes `ifdef SP_ICACHE
+  `endif // Closes `ifdef MP_ICACHE
+ `endif // Closes `ifdef PRI_ICACHE
+`endif // Closes `ifdef SNITCH_ICACHE
 
 
 
