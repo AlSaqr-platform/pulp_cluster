@@ -138,9 +138,9 @@ module core_demux
 
   always_comb
   begin
-    TCDM_RW          = 12'h100 + (CLUSTER_ID << 2) + 0;
-    TCDM_TS          = 12'h100 + (CLUSTER_ID << 2) + 1;
-    DEM_PER          = 12'h100 + (CLUSTER_ID << 2) + 2;
+    TCDM_RW          = 12'hB00 + (CLUSTER_ID << 2) + 0;
+    TCDM_TS          = 12'hB00 + (CLUSTER_ID << 2) + 1;
+    DEM_PER          = 12'hB00 + (CLUSTER_ID << 2) + 2;
   end
  
  

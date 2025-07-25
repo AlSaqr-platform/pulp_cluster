@@ -98,7 +98,7 @@ module cluster_bus_wrap
   
   // address map
   logic [63:0] cluster_base_addr;
-  assign cluster_base_addr = 64'h1000_0000 + ( cluster_id_i << 22);
+  assign cluster_base_addr = 64'hB000_0000 + ( cluster_id_i << 22);
   localparam int unsigned N_RULES = NB_MASTER;
   pulp_cluster_package::addr_map_rule_t [N_RULES-1:0] addr_map; 
 
@@ -120,10 +120,10 @@ module cluster_bus_wrap
   };
   assign addr_map[3] = '{ // everything above cluster to ext_slave
     idx:  3,
-    start_addr: cluster_base_addr + 64'h0050_0000,
-    end_addr:   32'hFFFF_FFFF
+    start_addr: 64'h1_0000,
+    end_addr:   cluster_base_addr
   };
-    
+
   localparam int unsigned MAX_TXNS_PER_SLV_PORT = (DMA_NB_OUTSND_BURSTS > NB_CORES) ?
                                                     DMA_NB_OUTSND_BURSTS : NB_CORES;
 
