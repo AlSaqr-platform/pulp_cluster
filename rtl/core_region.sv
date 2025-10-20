@@ -501,11 +501,11 @@ module core_region
   always @(posedge clk_i)
   begin : CHECK_ASSERTIONS
 `ifndef CLUSTER_ALIAS
-    if ((s_core_bus.req == 1'b1) && (s_core_bus.add < 32'h1000_0000)) begin
+    if ((s_core_bus.req == 1'b1) && (s_core_bus.add < 32'hB000_0000)) begin
       $error("ERROR_1 (0x00000000 -> 0x10000000) : Data interface is making a request on unmapped region --> %8x\t at time %t [ns]" ,s_core_bus.add, $time()/1000 );
       $finish();
     end
-    if ((s_core_bus.req == 1'b1) && (s_core_bus.add >= 32'h1040_0000) && ((s_core_bus.add < 32'h1A00_0000))) begin
+    if ((s_core_bus.req == 1'b1) && (s_core_bus.add >= 32'hB040_0000) && ((s_core_bus.add < 32'h1A00_0000))) begin
       $error("ERROR_2 (0x10400000 -> 0x1A000000) : Data interface is making a request on unmapped region --> %8x\t at time %t [ns]" ,s_core_bus.add, $time()/1000 );
       $finish();
     end

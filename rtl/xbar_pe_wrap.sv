@@ -54,7 +54,7 @@ module pe_ip_decode
         end else begin
           if (
             // if the access is to this cluster ..
-            (addr_i[31:24] == 8'h10 || (cluster_alias_i && addr_i[31:24] == CLUSTER_ALIAS_BASE[11:4]))
+            (addr_i[31:24] == 8'hB0 || (cluster_alias_i && addr_i[31:24] == CLUSTER_ALIAS_BASE[11:4]))
             // .. and the peripherals
             && (addr_i[23:20] >= 4'h2 && addr_i[23:20] <= 4'h3)
           ) begin
